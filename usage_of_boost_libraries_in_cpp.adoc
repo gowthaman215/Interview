@@ -104,4 +104,100 @@ Boost.Regex provides a powerful and flexible regular expression library for C++,
 #include <iostream>
 #include <string>
 
-void regexExam
+void regexExample() {
+    boost::regex expr("(\\w+)");
+    std::string text = "Boost libraries are great!";
+    boost::smatch result;
+
+    if (boost::regex_search(text, result, expr)) {
+        std::cout << "First word: " << result[1] << std::endl;
+    }
+}
+----
+
+This example uses a regex to find the first word in a string. :contentReference[oaicite:9]{index=9}
+
+---
+
+== Boost::Tuple
+
+Boost.Tuple is similar to `std::pair` but allows storing more than two heterogeneous values. :contentReference[oaicite:10]{index=10}
+
+=== Example: Using boost::tuple
+
+[source,cpp]
+----
+#include <boost/tuple/tuple.hpp>
+#include <boost/tuple/tuple_comparison.hpp>
+#include <iostream>
+
+int main() {
+    boost::tuple<int, std::string, double> t(1, "example", 3.14);
+    std::cout << "Integer: " << boost::get<0>(t) << std::endl;
+    std::cout << "String: " << boost::get<1>(t) << std::endl;
+    std::cout << "Double: " << boost::get<2>(t) << std::endl;
+    return 0;
+}
+----
+* `boost::get<N>(tuple)` is used to access tuple elements. :contentReference[oaicite:11]{index=11}
+
+---
+
+== Boost::Variant
+
+Boost.Variant acts like a type-safe union, allowing a variable to hold one of several types. :contentReference[oaicite:12]{index=12}
+
+=== Example: boost::variant
+
+[source,cpp]
+----
+#include <boost/variant.hpp>
+#include <iostream>
+#include <string>
+
+int main() {
+    boost::variant<int, std::string> x;
+    x = "hello";
+    std::cout << boost::get<std::string>(x) << std::endl;
+
+    x = 5;
+    std::cout << boost::get<int>(x) << std::endl;
+    return 0;
+}
+----
+* Boost.Variant supports storing different types safely in the same variable. :contentReference[oaicite:13]{index=13}
+
+---
+
+== More Boost Utilities
+
+The original article also discusses or implies usage of additional Boost utilities like:
+
+* **Boost.Any** – stores a value of any type and provides safe casting. :contentReference[oaicite:14]{index=14}
+* **Boost.LexicalCast** – convenient conversion between strings and other types. :contentReference[oaicite:15]{index=15}
+* **Boost.Format** – type-safe formatting alternative to `printf`-style functions. :contentReference[oaicite:16]{index=16}
+
+Each helps improve expressiveness and safety when writing C++ applications. :contentReference[oaicite:17]{index=17}
+
+---
+
+== Summary
+
+Boost is a highly versatile and influential set of C++ libraries that:
+
+* Extends C++ functionality beyond the Standard Library. :contentReference[oaicite:18]{index=18}
+* Includes utilities for memory management, threading, filesystem access, regex, and more. :contentReference[oaicite:19]{index=19}
+* Serves as a source of libraries eventually standardized in modern C++. :contentReference[oaicite:20]{index=20}
+
+Boost helps developers write portable, high-quality C++ code without reinventing common solutions.
+
+---
+
+If you’d like, I can also generate:
+* **A PDF/HTML version**
+* **Annotated interview Q&A**
+* **Extended examples with explanations**
+* **Integration and build steps for Boost on various platforms**
+
+Just tell me what format you need next 👍.
+::contentReference[oaicite:21]{index=21}
