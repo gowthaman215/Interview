@@ -1,0 +1,32 @@
+= STL Trade-offs in C++
+:toc:
+:toclevels: 3
+:sectnums:
+:source-highlighter: coderay
+
+== Introduction
+
+STL trade-offs refer to the conscious decisions made when choosing STL containers, algorithms, and utilities by balancing:
+
+* Performance
+* Memory usage
+* Predictability
+* Safety
+* Flexibility
+
+No STL container or algorithm is universally best; each choice involves compromises.
+
+---
+
+== vector vs list
+
+| Aspect | vector | list |
+|------|--------|------|
+| Memory layout | Contiguous | Non-contiguous |
+| Cache friendliness | Excellent | Poor |
+| Random access | O(1) | Not supported |
+| Insert/Delete (middle) | O(n) | O(1) |
+| Memory overhead | Low | High |
+
+Trade-off:
+* `vector` offers speed and cache localit*
