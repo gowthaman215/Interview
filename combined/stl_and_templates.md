@@ -1,47 +1,48 @@
 # C++ Templates and STL
 
-This file combines the following references into one document:
+A single, de-duplicated reference merged from:
+`cpp_templates_and_stl_complete_reference.md`, `cpp_stl_containers_complete_reference.md`,
+`cpp_stl_algorithms_complete_reference.md` and `stl_tradeoffs.md`.
 
-1. [C++ Templates and STL — Complete In-Depth Reference](#part-1) — from `cpp_templates_and_stl_complete_reference.md`
-2. [C++ STL Containers — Complete Reference with Member Function Examples](#part-2) — from `cpp_stl_containers_complete_reference.md`
-3. [C++ STL Algorithms — Complete Reference with Examples](#part-3) — from `cpp_stl_algorithms_complete_reference.md`
-4. [STL Trade-offs in C++](#part-4) — from `stl_tradeoffs.md`
+## Contents
+
+1. [Introduction](#introduction)
+2. [Templates — The Foundation of STL](#templates--the-foundation-of-stl)
+3. [STL Containers](#stl-containers)
+4. [Iterators](#iterators)
+5. [STL Algorithms](#stl-algorithms)
+6. [Other STL Building Blocks](#other-stl-building-blocks)
+7. [Complexity Guarantees](#complexity-guarantees)
+8. [STL Trade-offs](#stl-trade-offs)
+9. [Guidelines and Common Mistakes](#guidelines-and-common-mistakes)
+10. [Final Takeaway](#final-takeaway)
 
 ---
 
-<a id="part-1"></a>
-
-*Part 1 — source: `cpp_templates_and_stl_complete_reference.md`*
-
-## C++ Templates and STL — Complete In-Depth Reference
-
-### 1. Introduction
+## Introduction
 
 The C++ Standard Template Library (STL) is built entirely on **templates**.
 To understand STL properly, you must first understand **template-based generic programming**.
 
-STL provides:
+STL consists of:
 - Containers (data storage)
 - Algorithms (data processing)
 - Iterators (abstraction layer)
+- Function objects
 - Allocators (memory control)
 
-All of these are template-based and zero-cost.
+All of these are template-based and zero-cost. Algorithms operate on **iterator ranges**, not containers.
 
 ---
 
-### 2. Templates — The Foundation of STL
+## Templates — The Foundation of STL
 
 Templates enable **generic programming**:
 > Write code once, use it for any type.
 
 STL would not exist without templates.
 
----
-
-### 3. Function Templates
-
-#### Basic Function Template
+### Function Templates
 
 ```cpp
 template<typename T>
@@ -50,16 +51,14 @@ T add(T a, T b) {
 }
 ```
 
-Compiler generates functions as needed:
+The compiler generates functions as needed:
 
 ```cpp
 add<int>(1, 2);
 add(1.5, 2.5);   // type deduced
 ```
 
----
-
-#### Multiple Template Parameters
+Multiple template parameters:
 
 ```cpp
 template<typename T, typename U>
@@ -68,11 +67,7 @@ auto multiply(T a, U b) {
 }
 ```
 
----
-
-### 4. Class Templates
-
-#### Basic Class Template
+### Class Templates
 
 ```cpp
 template<typename T>
@@ -82,22 +77,16 @@ public:
     Box(T v) : value(v) {}
     T get() const { return value; }
 };
-```
 
-Usage:
-
-```cpp
 Box<int> bi(10);
 Box<std::string> bs("hello");
 ```
 
 Every STL container is a **class template**.
 
----
+### Template Specialization
 
-### 5. Template Specialization
-
-#### Full Specialization
+Full specialization — when a specific type needs special handling:
 
 ```cpp
 template<>
@@ -107,11 +96,7 @@ public:
 };
 ```
 
-Used when a specific type needs special handling.
-
----
-
-#### Partial Specialization (Class Templates Only)
+Partial specialization (class templates only) — used heavily by the STL:
 
 ```cpp
 template<typename T>
@@ -119,25 +104,16 @@ class Box<T*> {
 };
 ```
 
-STL uses partial specialization heavily.
-
----
-
-### 6. Variadic Templates (C++11)
+### Variadic Templates (C++11)
 
 ```cpp
 template<typename... Args>
 void log(Args... args) {}
 ```
 
-Used in:
-- std::tuple
-- std::function
-- std::emplace
+Used in `std::tuple`, `std::function`, and `emplace`.
 
----
-
-### 7. Perfect Forwarding
+### Perfect Forwarding
 
 ```cpp
 template<typename T>
@@ -146,325 +122,14 @@ void wrapper(T&& arg) {
 }
 ```
 
-Preserves value category:
-- lvalue → lvalue
-- rvalue → rvalue
-
-Critical for STL efficiency.
+Preserves value category (lvalue → lvalue, rvalue → rvalue). Critical for STL efficiency.
 
 ---
 
-### 8. STL Overview
-
-STL consists of:
-
-- Containers
-- Iterators
-- Algorithms
-- Function objects
-- Allocators
-
-Algorithms operate on **iterator ranges**, not containers.
-
----
-
-### 9. Sequence Containers
-
-#### std::vector
-
-```cpp
-std::vector<int> v = {1,2,3};
-v.push_back(4);
-```
-
-Properties:
-- Contiguous memory
-- Cache friendly
-- O(1) random access
-- Insertion in middle is expensive
-
----
-
-#### std::deque
-
-```cpp
-std::deque<int> d;
-d.push_front(1);
-d.push_back(2);
-```
-
-- Fast front/back insertion
-- Non-contiguous memory
-
----
-
-#### std::list
-
-```cpp
-std::list<int> l;
-l.push_back(1);
-```
-
-- O(1) insertion anywhere
-- Poor cache locality
-- Rarely needed
-
----
-
-#### std::array
-
-```cpp
-std::array<int,3> a = {1,2,3};
-```
-
-- Fixed size
-- Stack allocated
-- Zero overhead
-
----
-
-### 10. Associative Containers (Ordered)
-
-Based on balanced trees (Red-Black Tree).
-
----
-
-#### std::map
-
-```cpp
-std::map<int,std::string> m;
-m[1] = "one";
-```
-
-Properties:
-- Sorted by key
-- O(log n) operations
-
----
-
-#### std::set
-
-```cpp
-std::set<int> s = {1,2,3};
-```
-
-Unique sorted keys.
-
----
-
-### 11. Unordered Containers (Hash-Based)
-
-Based on hash tables.
-
----
-
-#### std::unordered_map
-
-```cpp
-std::unordered_map<int,std::string> um;
-um[1] = "one";
-```
-
-Properties:
-- O(1) average lookup
-- No ordering
-- Higher memory usage
-
----
-
-### 12. Iterators — The Glue
-
-Iterators are generalized pointers.
-
-```cpp
-for(auto it = v.begin(); it != v.end(); ++it) {
-    std::cout << *it;
-}
-```
-
-Algorithms only see iterators.
-
----
-
-### 13. Iterator Categories
-
-| Category | Capability |
-|-------|-----------|
-| Input | Read once |
-| Output | Write once |
-| Forward | Multi-pass |
-| Bidirectional | ++, -- |
-| Random Access | +, -, [] |
-
----
-
-### 14. STL Algorithms
-
-Algorithms operate on iterator ranges.
-
-```cpp
-std::sort(v.begin(), v.end());
-std::find(v.begin(), v.end(), 3);
-std::count_if(v.begin(), v.end(),
-              [](int x){ return x > 2; });
-```
-
-Algorithms do NOT know container types.
-
----
-
-### 15. Function Objects (Functors)
-
-```cpp
-struct Greater {
-    bool operator()(int a, int b) const {
-        return a > b;
-    }
-};
-```
-
-Used by algorithms and containers.
-
----
-
-### 16. Emplace vs Insert (C++11)
-
-```cpp
-v.emplace_back(10);  // constructs in place
-v.push_back(10);     // may create temporary
-```
-
-Emplace avoids unnecessary copies.
-
----
-
-### 17. Allocators (Advanced)
-
-Allocators control memory behavior.
-
-```cpp
-std::vector<int, MyAllocator<int>> v;
-```
-
-Used in:
-- Custom memory pools
-- Low-latency systems
-- Embedded systems
-
----
-
-### 18. Iterator Invalidation Rules
-
-Example:
-
-```cpp
-std::vector<int> v = {1,2};
-auto it = v.begin();
-v.push_back(3);   // it may be invalid
-```
-
-Key idea:
-- vector reallocates
-- list does not
-- map invalidates erased elements only
-
----
-
-### 19. STL Complexity Guarantees
-
-STL guarantees performance.
-
-Examples:
-- vector::push_back → amortized O(1)
-- map::find → O(log n)
-- unordered_map::find → O(1) average
-
-Design depends on these guarantees.
-
----
-
-### 20. STL Trade-Offs (Critical Thinking)
-
-| Choice | Gain | Cost |
-|-----|-----|-----|
-| vector | Cache friendly | Slow inserts |
-| list | Fast inserts | Poor cache |
-| map | Ordered | Slower |
-| unordered_map | Fast | Memory |
-
-STL forces conscious design.
-
----
-
-### 21. STL + RAII
-
-```cpp
-{
-    std::vector<int> v = {1,2,3};
-} // memory released automatically
-```
-
-STL containers fully follow RAII.
-
----
-
-### 22. STL in Modern C++11/14
-
-Improvements:
-- Move semantics reduce copies
-- Lambdas replace functors
-- auto simplifies code
-- make_unique added
-- constexpr containers (limited)
-
----
-
-### 23. Common STL Mistakes
-
-- Using list without reason
-- Ignoring iterator invalidation
-- Copying large containers
-- Not reserving vector capacity
-- Overusing unordered containers
-
----
-
-### 24. Real-World STL Usage Guidelines
-
-- Prefer vector by default
-- Reserve capacity early
-- Avoid list unless necessary
-- Use algorithms instead of loops
-- Understand memory layout
-- Measure performance
-
----
-
-### 25. Final Takeaway
-
-STL is not just a library.
-It is a **generic programming framework** built on templates, iterators, and strict performance guarantees.
-
-Mastery requires understanding:
-- Templates
-- Ownership
-- Iterators
-- Complexity
-- Trade-offs
-
-This document is a **complete, simple, long-term STL reference**.
-
----
-
-<a id="part-2"></a>
-
-*Part 2 — source: `cpp_stl_containers_complete_reference.md`*
-
-## C++ STL Containers — Complete Reference with Member Function Examples
-
-### 1. STL Containers Overview
+## STL Containers
 
 STL containers are **template-based data structures** that manage collections of objects.
+All containers follow RAII and manage memory automatically.
 
 Container categories:
 - Sequence containers
@@ -472,21 +137,13 @@ Container categories:
 - Unordered containers (hash-based)
 - Container adapters
 
-All containers follow RAII and manage memory automatically.
-
----
-
-### 2. Sequence Containers
+### Sequence Containers
 
 Sequence containers store elements in a linear order.
 
----
-
-#### 2.1 std::vector
+#### std::vector
 
 Dynamic array with contiguous memory.
-
-##### Common Member Functions
 
 ```cpp
 std::vector<int> v;
@@ -518,18 +175,14 @@ v.begin();
 v.end();
 ```
 
-Key notes:
-- Fast random access
+- Contiguous memory, cache friendly
+- O(1) fast random access
 - Insertion in middle is expensive
 - Iterators invalidated on reallocation
 
----
-
-#### 2.2 std::deque
+#### std::deque
 
 Double-ended queue.
-
-##### Common Member Functions
 
 ```cpp
 std::deque<int> d;
@@ -546,18 +199,13 @@ d.size();
 d.clear();
 ```
 
-Key notes:
 - Fast insertion at both ends
-- No contiguous memory
+- Non-contiguous (segmented) memory
 - Iterators stable unless reallocation of blocks
 
----
-
-#### 2.3 std::list
+#### std::list
 
 Doubly linked list.
-
-##### Common Member Functions
 
 ```cpp
 std::list<int> l;
@@ -574,18 +222,14 @@ l.reverse();
 l.unique();
 ```
 
-Key notes:
-- Fast insertion anywhere
+- O(1) insertion anywhere
 - No random access
 - Poor cache locality
+- Rarely needed
 
----
-
-#### 2.4 std::forward_list
+#### std::forward_list
 
 Singly linked list.
-
-##### Common Member Functions
 
 ```cpp
 std::forward_list<int> fl;
@@ -595,18 +239,13 @@ fl.insert_after(fl.before_begin(), 2);
 fl.erase_after(fl.before_begin());
 ```
 
-Key notes:
 - Minimal memory overhead
-- No size()
+- No `size()`
 - One-direction traversal
 
----
-
-#### 2.5 std::array
+#### std::array
 
 Fixed-size container.
-
-##### Common Member Functions
 
 ```cpp
 std::array<int, 3> a = {1,2,3};
@@ -620,24 +259,17 @@ a.front();
 a.back();
 ```
 
-Key notes:
 - Stack allocated
 - Size known at compile time
 - Zero overhead
 
----
-
-### 3. Associative Containers (Ordered)
+### Associative Containers (Ordered)
 
 Implemented using balanced trees (Red-Black Tree).
 
----
-
-#### 3.1 std::map
+#### std::map
 
 Key-value pairs, sorted by key.
-
-##### Common Member Functions
 
 ```cpp
 std::map<int, std::string> m;
@@ -659,14 +291,11 @@ m.erase(1);
 m.clear();
 ```
 
-Key notes:
 - Keys are unique
 - O(log n) operations
 - Iterators stable
 
----
-
-#### 3.2 std::multimap
+#### std::multimap
 
 Allows duplicate keys.
 
@@ -676,13 +305,9 @@ mm.insert({1, "one"});
 mm.insert({1, "uno"});
 ```
 
----
-
-#### 3.3 std::set
+#### std::set
 
 Sorted unique keys.
-
-##### Common Member Functions
 
 ```cpp
 std::set<int> s;
@@ -696,9 +321,7 @@ s.count(3);
 s.erase(3);
 ```
 
----
-
-#### 3.4 std::multiset
+#### std::multiset
 
 Allows duplicate keys.
 
@@ -708,17 +331,11 @@ ms.insert(1);
 ms.insert(1);
 ```
 
----
-
-### 4. Unordered Containers (Hash-Based)
+### Unordered Containers (Hash-Based)
 
 Implemented using hash tables.
 
----
-
-#### 4.1 std::unordered_map
-
-##### Common Member Functions
+#### std::unordered_map
 
 ```cpp
 std::unordered_map<int, std::string> um;
@@ -740,50 +357,29 @@ um.load_factor();
 um.rehash(100);
 ```
 
-Key notes:
 - O(1) average lookup
 - No ordering
+- Higher memory usage
 - Iterators invalidated on rehash
 
----
-
-#### 4.2 std::unordered_multimap
-
-Allows duplicate keys.
+#### std::unordered_multimap, std::unordered_set, std::unordered_multiset
 
 ```cpp
-std::unordered_multimap<int, std::string> umm;
-```
+std::unordered_multimap<int, std::string> umm;   // duplicate keys
 
----
-
-#### 4.3 std::unordered_set
-
-```cpp
 std::unordered_set<int> us;
-
 us.insert(1);
 us.find(1);
 us.erase(1);
-```
 
----
-
-#### 4.4 std::unordered_multiset
-
-```cpp
 std::unordered_multiset<int> ums;
 ```
 
----
-
-### 5. Container Adapters
+### Container Adapters
 
 Adapters provide restricted interfaces.
 
----
-
-#### 5.1 std::stack
+#### std::stack
 
 LIFO container.
 
@@ -796,9 +392,7 @@ st.pop();
 st.empty();
 ```
 
----
-
-#### 5.2 std::queue
+#### std::queue
 
 FIFO container.
 
@@ -811,9 +405,7 @@ q.back();
 q.pop();
 ```
 
----
-
-#### 5.3 std::priority_queue
+#### std::priority_queue
 
 Heap-based queue.
 
@@ -832,9 +424,7 @@ Min-heap:
 std::priority_queue<int, std::vector<int>, std::greater<int>> minpq;
 ```
 
----
-
-### 6. Common Container Member Functions
+### Common Container Member Functions
 
 Most containers support:
 
@@ -850,7 +440,33 @@ cend();
 
 ---
 
-### 7. Iterator Invalidation Summary
+## Iterators
+
+Iterators are generalized pointers — the glue between containers and algorithms. Algorithms only see iterators.
+
+```cpp
+for(auto it = v.begin(); it != v.end(); ++it) {
+    std::cout << *it;
+}
+```
+
+### Iterator Categories
+
+| Category | Capability |
+|-------|-----------|
+| Input | Read once |
+| Output | Write once |
+| Forward | Multi-pass |
+| Bidirectional | ++, -- |
+| Random Access | +, -, [] |
+
+### Iterator Invalidation
+
+```cpp
+std::vector<int> v = {1,2};
+auto it = v.begin();
+v.push_back(3);   // it may be invalid
+```
 
 | Container | Invalidation |
 |--------|-------------|
@@ -862,46 +478,14 @@ cend();
 
 ---
 
-### 8. Container Selection Guidelines
-
-- Default → vector
-- Need ordering → map / set
-- Need fast lookup → unordered_map
-- Frequent insert anywhere → list
-- Fixed size → array
-
----
-
-### 9. Common Mistakes
-
-- Using list without need
-- Forgetting reserve() for vector
-- Ignoring iterator invalidation
-- Using unordered containers without hash tuning
-
----
-
-### 10. Final Takeaway
-
-STL containers provide safe, efficient, and well-defined data structures.
-Choosing the correct container and using the right member functions is critical for performance and correctness in modern C++.
-
----
-
-<a id="part-3"></a>
-
-*Part 3 — source: `cpp_stl_algorithms_complete_reference.md`*
-
-## C++ STL Algorithms — Complete Reference with Examples
-
-### 1. Introduction to STL Algorithms
+## STL Algorithms
 
 STL algorithms are **generic functions** that operate on **iterator ranges**.
 
 Key principles:
 - Algorithms do NOT own data
 - They work on iterators
-- Containers and algorithms are decoupled
+- Containers and algorithms are decoupled — algorithms do NOT know container types
 - Performance guarantees are well-defined
 
 Most algorithms are declared in:
@@ -910,126 +494,48 @@ Most algorithms are declared in:
 #include <numeric>
 ```
 
----
-
-### 2. Iterator-Based Design
+### Iterator-Based Design
 
 All algorithms operate on:
 ```cpp
 [first, last)
 ```
 
-Where:
-- `first` → inclusive
-- `last` → exclusive
+Where `first` is inclusive and `last` is exclusive.
 
 ```cpp
 std::sort(v.begin(), v.end());
 ```
 
----
-
-### 3. Non-Modifying Sequence Algorithms
+### Non-Modifying Sequence Algorithms
 
 These algorithms **do not change elements**.
 
----
-
-#### std::find
-
 ```cpp
-auto it = std::find(v.begin(), v.end(), 5);
-```
-
-Finds first occurrence.
-
----
-
-#### std::count
-
-```cpp
+auto it = std::find(v.begin(), v.end(), 5);   // first occurrence
 std::count(v.begin(), v.end(), 1);
-```
-
----
-
-#### std::count_if
-
-```cpp
 std::count_if(v.begin(), v.end(),
               [](int x){ return x > 10; });
-```
-
----
-
-#### std::find_if / find_if_not
-
-```cpp
-std::find_if(v.begin(), v.end(), pred);
-```
-
----
-
-#### std::all_of / any_of / none_of
-
-```cpp
+std::find_if(v.begin(), v.end(), pred);       // also find_if_not
 std::all_of(v.begin(), v.end(), pred);
 std::any_of(v.begin(), v.end(), pred);
 std::none_of(v.begin(), v.end(), pred);
 ```
 
----
-
-### 4. Modifying Sequence Algorithms
+### Modifying Sequence Algorithms
 
 These algorithms **modify elements**.
 
----
-
-#### std::copy
-
 ```cpp
 std::copy(src.begin(), src.end(), dest.begin());
-```
-
----
-
-#### std::move
-
-```cpp
-std::move(src.begin(), src.end(), dest.begin());
-```
-
-Moves elements.
-
----
-
-#### std::transform
-
-```cpp
+std::move(src.begin(), src.end(), dest.begin());   // moves elements
 std::transform(v.begin(), v.end(), v.begin(),
                [](int x){ return x * 2; });
-```
-
----
-
-#### std::replace / replace_if
-
-```cpp
-std::replace(v.begin(), v.end(), 1, 100);
-```
-
----
-
-#### std::fill
-
-```cpp
+std::replace(v.begin(), v.end(), 1, 100);          // also replace_if
 std::fill(v.begin(), v.end(), 0);
 ```
 
----
-
-#### std::remove / remove_if (IMPORTANT)
+#### std::remove / remove_if (Important)
 
 ```cpp
 auto it = std::remove(v.begin(), v.end(), 3);
@@ -1037,102 +543,37 @@ v.erase(it, v.end());
 ```
 
 - Does NOT erase from container
-- Shifts elements
+- Shifts elements (use the erase-remove idiom)
 
----
-
-### 5. Partitioning Algorithms
-
----
-
-#### std::partition
+### Partitioning Algorithms
 
 ```cpp
 std::partition(v.begin(), v.end(),
                [](int x){ return x % 2 == 0; });
 ```
 
----
+`std::stable_partition` preserves order.
 
-#### std::stable_partition
-
-Preserves order.
-
----
-
-### 6. Sorting Algorithms
-
----
-
-#### std::sort
+### Sorting Algorithms
 
 ```cpp
-std::sort(v.begin(), v.end());
-```
-
-- Average O(n log n)
-- Requires random-access iterators
-
----
-
-#### std::stable_sort
-
-Preserves relative order.
-
----
-
-#### std::partial_sort
-
-```cpp
+std::sort(v.begin(), v.end());                       // avg O(n log n), random-access iterators
 std::partial_sort(v.begin(), v.begin()+3, v.end());
+std::nth_element(v.begin(), v.begin()+k, v.end());   // places nth element correctly
 ```
 
----
+`std::stable_sort` preserves relative order.
 
-#### std::nth_element
-
-```cpp
-std::nth_element(v.begin(), v.begin()+k, v.end());
-```
-
-Places nth element correctly.
-
----
-
-### 7. Binary Search Algorithms (Sorted Range)
-
----
-
-#### std::binary_search
+### Binary Search Algorithms (Sorted Range)
 
 ```cpp
 std::binary_search(v.begin(), v.end(), 10);
-```
-
----
-
-#### std::lower_bound / upper_bound
-
-```cpp
 auto it1 = std::lower_bound(v.begin(), v.end(), 10);
 auto it2 = std::upper_bound(v.begin(), v.end(), 10);
-```
-
----
-
-#### std::equal_range
-
-```cpp
 auto range = std::equal_range(v.begin(), v.end(), 10);
 ```
 
----
-
-### 8. Set Algorithms (Sorted Ranges)
-
----
-
-#### std::set_union
+### Set Algorithms (Sorted Ranges)
 
 ```cpp
 std::set_union(a.begin(), a.end(),
@@ -1140,174 +581,68 @@ std::set_union(a.begin(), a.end(),
                out.begin());
 ```
 
----
+Also: `std::set_intersection`, `std::set_difference`, `std::set_symmetric_difference`.
 
-#### std::set_intersection
-
----
-
-#### std::set_difference
-
----
-
-#### std::set_symmetric_difference
-
----
-
-### 9. Heap Algorithms
-
----
-
-#### std::make_heap
+### Heap Algorithms
 
 ```cpp
 std::make_heap(v.begin(), v.end());
-```
 
----
-
-#### std::push_heap
-
-```cpp
 v.push_back(10);
 std::push_heap(v.begin(), v.end());
-```
 
----
-
-#### std::pop_heap
-
-```cpp
 std::pop_heap(v.begin(), v.end());
 v.pop_back();
-```
 
----
-
-#### std::sort_heap
-
-```cpp
 std::sort_heap(v.begin(), v.end());
 ```
 
----
-
-### 10. Permutation Algorithms
-
----
-
-#### std::next_permutation
+### Permutation Algorithms
 
 ```cpp
 std::next_permutation(v.begin(), v.end());
 ```
 
----
+Also: `std::prev_permutation`.
 
-#### std::prev_permutation
-
----
-
-### 11. Numeric Algorithms (<numeric>)
-
----
-
-#### std::accumulate
+### Numeric Algorithms (`<numeric>`)
 
 ```cpp
 int sum = std::accumulate(v.begin(), v.end(), 0);
-```
-
----
-
-#### std::inner_product
-
-```cpp
 std::inner_product(a.begin(), a.end(), b.begin(), 0);
-```
-
----
-
-#### std::partial_sum
-
-```cpp
 std::partial_sum(v.begin(), v.end(), v.begin());
 ```
 
----
+Also: `std::adjacent_difference`.
 
-#### std::adjacent_difference
-
----
-
-### 12. Min / Max Algorithms
-
----
-
-#### std::min / max
+### Min / Max Algorithms
 
 ```cpp
 std::min(a, b);
 std::max(a, b);
+auto it = std::max_element(v.begin(), v.end());   // also min_element
 ```
 
----
+Also: `std::minmax`, `std::minmax_element`.
 
-#### std::min_element / max_element
-
-```cpp
-auto it = std::max_element(v.begin(), v.end());
-```
-
----
-
-#### std::minmax / minmax_element
-
----
-
-### 13. Comparison Algorithms
-
----
-
-#### std::equal
+### Comparison Algorithms
 
 ```cpp
 std::equal(a.begin(), a.end(), b.begin());
-```
-
----
-
-#### std::lexicographical_compare
-
-```cpp
 std::lexicographical_compare(a.begin(), a.end(),
                              b.begin(), b.end());
 ```
 
----
-
-### 14. Search Algorithms
-
----
-
-#### std::search
+### Search Algorithms
 
 ```cpp
 std::search(v.begin(), v.end(),
             sub.begin(), sub.end());
 ```
 
----
+Also: `std::find_end`, `std::find_first_of`.
 
-#### std::find_end
-
----
-
-#### std::find_first_of
-
----
-
-### 15. Algorithms vs Member Functions
+### Algorithms vs Member Functions
 
 Prefer:
 ```cpp
@@ -1321,31 +656,7 @@ container.find(x);  // only for associative containers
 
 Algorithms are more generic.
 
----
-
-### 16. Algorithm Complexity Guarantees
-
-Examples:
-- find → O(n)
-- sort → O(n log n)
-- binary_search → O(log n)
-- remove → O(n)
-
-Always check complexity.
-
----
-
-### 17. Common Algorithm Mistakes
-
-- Forgetting erase-remove idiom
-- Using sort on non-random iterators
-- Binary search on unsorted data
-- Assuming remove deletes elements
-- Ignoring iterator invalidation
-
----
-
-### 18. Algorithms + Lambdas (Modern C++)
+### Algorithms + Lambdas (Modern C++)
 
 ```cpp
 std::count_if(v.begin(), v.end(),
@@ -1354,9 +665,7 @@ std::count_if(v.begin(), v.end(),
 
 Lambdas replaced many functors.
 
----
-
-### 19. When to Use Which Algorithm
+### When to Use Which Algorithm
 
 - Need search → find / binary_search
 - Need reorder → sort / partition
@@ -1366,23 +675,76 @@ Lambdas replaced many functors.
 
 ---
 
-### 20. Final Takeaway
+## Other STL Building Blocks
 
-STL algorithms provide powerful, efficient, and reusable operations that separate **what** you do from **how** data is stored.
+### Function Objects (Functors)
 
-Mastering algorithms is essential for writing modern, clean, and high-performance C++ code.
+```cpp
+struct Greater {
+    bool operator()(int a, int b) const {
+        return a > b;
+    }
+};
+```
+
+Used by algorithms and containers.
+
+### Emplace vs Insert (C++11)
+
+```cpp
+v.emplace_back(10);  // constructs in place
+v.push_back(10);     // may create temporary
+```
+
+Emplace avoids unnecessary copies.
+
+### Allocators (Advanced)
+
+Allocators control memory behavior.
+
+```cpp
+std::vector<int, MyAllocator<int>> v;
+```
+
+Used in custom memory pools, low-latency systems, and embedded systems.
+
+### STL + RAII
+
+```cpp
+{
+    std::vector<int> v = {1,2,3};
+} // memory released automatically
+```
+
+STL containers fully follow RAII.
+
+### STL in Modern C++11/14
+
+- Move semantics reduce copies
+- Lambdas replace functors
+- auto simplifies code
+- make_unique added
+- constexpr containers (limited)
 
 ---
 
-<a id="part-4"></a>
+## Complexity Guarantees
 
-*Part 4 — source: `stl_tradeoffs.md`*
+STL guarantees performance, and design depends on these guarantees. Always check complexity.
 
-## STL Trade-offs in C++
+- vector::push_back → amortized O(1)
+- map::find → O(log n)
+- unordered_map::find → O(1) average
+- find → O(n)
+- sort → O(n log n)
+- binary_search → O(log n)
+- remove → O(n)
 
-### Introduction
+---
 
-STL trade-offs refer to the conscious decisions made when choosing STL containers, algorithms, and utilities by balancing:
+## STL Trade-offs
+
+STL trade-offs are the conscious decisions made when choosing STL containers, algorithms, and utilities by balancing:
 
 - Performance
 - Memory usage
@@ -1390,9 +752,7 @@ STL trade-offs refer to the conscious decisions made when choosing STL container
 - Safety
 - Flexibility
 
-No STL container or algorithm is universally best; each choice involves compromises.
-
----
+No STL container or algorithm is universally best; each choice involves compromises. STL forces conscious design.
 
 ### vector vs list
 
@@ -1404,13 +764,8 @@ No STL container or algorithm is universally best; each choice involves compromi
 | Insert/Delete (middle) | O(n) | O(1) |
 | Memory overhead | Low | High |
 
-Trade-off:
-- `vector` offers speed and cache locality
-- `list` offers efficient insertions/deletions
-
-Preferred choice in most systems: `vector`
-
----
+`vector` offers speed and cache locality; `list` offers efficient insertions/deletions.
+Preferred choice in most systems: `vector`.
 
 ### vector vs deque
 
@@ -1422,11 +777,7 @@ Preferred choice in most systems: `vector`
 | Random access | O(1) | O(1) |
 | Cache locality | Best | Good |
 
-Trade-off:
-- `deque` supports efficient insertion at both ends
-- `vector` provides better cache performance
-
----
+`deque` supports efficient insertion at both ends; `vector` provides better cache performance.
 
 ### map vs unordered_map
 
@@ -1438,11 +789,7 @@ Trade-off:
 | Memory usage | Lower | Higher |
 | Cache friendliness | Poor | Better |
 
-Trade-off:
-- `map` provides ordering and predictable performance
-- `unordered_map` provides faster average lookup at the cost of memory
-
----
+`map` provides ordering and predictable performance; `unordered_map` provides faster average lookup at the cost of memory.
 
 ### set vs unordered_set
 
@@ -1453,9 +800,7 @@ Trade-off:
 | Memory usage | Lower | Higher |
 | Use case | Ordered unique elements | Fast membership checks |
 
-Trade-off mirrors `map` vs `unordered_map`.
-
----
+The trade-off mirrors `map` vs `unordered_map`.
 
 ### array vs vector
 
@@ -1466,13 +811,8 @@ Trade-off mirrors `map` vs `unordered_map`.
 | Overhead | None | Small |
 | Resize capability | No | Yes |
 
-Trade-off:
-- `array` offers predictability and zero overhead
-- `vector` offers flexibility and dynamic resizing
-
+`array` offers predictability and zero overhead; `vector` offers flexibility and dynamic resizing.
 Low-latency systems prefer `array` where size is known.
-
----
 
 ### Algorithms vs Custom Loops
 
@@ -1480,19 +820,11 @@ Low-latency systems prefer `array` where size is known.
 std::sort(v.begin(), v.end());
 ```
 
-vs
-
-```cpp
-// Custom hand-written loop
-```
-
-Trade-off:
+vs a custom hand-written loop:
 - STL algorithms are safer and more readable
 - Custom loops allow fine-grained micro-optimizations
 
 Best practice: use STL first, optimize only if required.
-
----
 
 ### Iterators vs Indexing
 
@@ -1506,11 +838,8 @@ vs
 for (size_t i = 0; i < v.size(); ++i)
 ```
 
-Trade-off:
 - Iterators are generic and container-independent
 - Indexing can be simpler and sometimes faster
-
----
 
 ### Smart Pointers in STL Containers
 
@@ -1518,25 +847,20 @@ Trade-off:
 std::vector<std::unique_ptr<Foo>>
 ```
 
-Trade-off:
 - Ensures clear ownership and safety
 - Introduces slight indirection cost
 
 Modern C++ favors ownership clarity over raw pointers.
 
----
-
 ### Memory vs Speed (Summary)
 
 | Choice | Gain | Cost |
 |------|------|------|
-| vector | Cache speed | Resize cost |
+| vector | Cache speed | Resize cost / slow inserts |
 | list | Fast insertion | Cache misses |
 | unordered_map | Fast lookup | Memory usage |
 | map | Ordering | Slower lookup |
 | array | Predictability | No resizing |
-
----
 
 ### Interview-Oriented Explanation
 
@@ -1550,6 +874,41 @@ Example:
 
 ---
 
-### One-Line Summary
+## Guidelines and Common Mistakes
 
-STL trade-offs are the deliberate compromises between performance, memory usage, predictability, and flexibility when selecting containers or algorithms in C++.
+### Container Selection and Usage Guidelines
+
+- Default → vector; reserve capacity early
+- Need ordering → map / set
+- Need fast lookup → unordered_map
+- Frequent insert anywhere → list (avoid list unless necessary)
+- Fixed size → array
+- Use algorithms instead of loops
+- Understand memory layout
+- Measure performance
+
+### Common Mistakes
+
+- Using list without reason
+- Not reserving vector capacity
+- Copying large containers
+- Ignoring iterator invalidation
+- Overusing unordered containers / using them without hash tuning
+- Forgetting the erase-remove idiom; assuming remove deletes elements
+- Using sort on non-random-access iterators
+- Binary search on unsorted data
+
+---
+
+## Final Takeaway
+
+STL is not just a library.
+It is a **generic programming framework** built on templates, iterators, and strict performance guarantees.
+Its algorithms separate **what** you do from **how** data is stored, and choosing the correct container and member functions is critical for performance and correctness.
+
+Mastery requires understanding:
+- Templates
+- Ownership
+- Iterators
+- Complexity
+- Trade-offs

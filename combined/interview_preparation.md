@@ -1,42 +1,56 @@
 # Interview Preparation
 
-This file combines the following references into one document:
+A single, de-duplicated reference merged from:
+`cpp_interview_questions_answers_with_code.md`, `scb_cplusplus_interview_questions_answers.md`
+and `scb_skills_and_qualifications.md`.
 
-1. [C++ Interview Questions and Answers (With Code Examples)](#part-1) — from `cpp_interview_questions_answers_with_code.md`
-2. [Standard Chartered Bank (SCB) – C++ Technical Interview Questions & Answers](#part-2) — from `scb_cplusplus_interview_questions_answers.md`
-3. [Technical Skills with Code Examples (C++ / Systems / Python / Database)](#part-3) — from `scb_skills_and_qualifications.md`
+It covers **commonly asked C++ interview questions** — including those asked at Standard Chartered Bank (SCB) for C++ / systems / e-trading roles — with **clear, practical answers and sample code**.
+
+Focus areas:
+- C++ fundamentals, OOP, and modern C++ (C++11/14/17)
+- Memory management
+- STL usage and trade-offs
+- Multithreading and concurrency
+- Low-latency and system design thinking
+- Linux and debugging basics
+- Supporting skills: Boost, Python, SQL, communication
+
+## Contents
+
+1. [C++ Basics](#c-basics)
+2. [Memory Management](#memory-management)
+3. [Object-Oriented Programming](#object-oriented-programming)
+4. [Constructors, RAII and Object Lifetime](#constructors-raii-and-object-lifetime)
+5. [Templates and Exception Handling](#templates-and-exception-handling)
+6. [STL and Containers](#stl-and-containers)
+7. [Smart Pointers](#smart-pointers)
+8. [Modern C++ (C++11/14/17)](#modern-c-c111417)
+9. [Multithreading and Concurrency](#multithreading-and-concurrency)
+10. [Low-Latency and System Design](#low-latency-and-system-design)
+11. [Linux, Tooling and Debugging](#linux-tooling-and-debugging)
+12. [Design Patterns](#design-patterns)
+13. [Boost Libraries](#boost-libraries)
+14. [Python (Support Skill)](#python-support-skill)
+15. [Database and SQL](#database-and-sql)
+16. [Communication and Behavioral](#communication-and-behavioral)
+17. [Final Interview Advice](#final-interview-advice)
 
 ---
 
-<a id="part-1"></a>
+## C++ Basics
 
-*Part 1 — source: `cpp_interview_questions_answers_with_code.md`*
+### What is C++?
 
-## C++ Interview Questions and Answers (With Code Examples)
-
-### Introduction
-
-This document provides a structured collection of **commonly asked C++ interview questions**, along with **technical explanations and sample code**.
-It covers fundamentals, OOP, memory management, STL, modern C++, and advanced topics.
-
----
-
-### C++ Basics
-
-#### What is C++?
-
-C++ is a general-purpose programming language that supports:
+C++ is a general-purpose systems programming language providing low-level control with high-level abstractions. It supports:
 
 - Procedural programming
 - Object-oriented programming
 - Generic programming
 - Low-level memory manipulation
 
-It is widely used in performance-critical systems.
+Key concepts: RAII, move semantics, zero-cost abstractions. It is widely used in performance-critical systems.
 
----
-
-#### Difference between C and C++
+### Difference between C and C++
 
 | C | C++ |
 |--|--|
@@ -45,52 +59,7 @@ It is widely used in performance-critical systems.
 | No function overloading | Function overloading |
 | Manual memory handling | RAII, smart pointers |
 
----
-
-### Memory Management
-
-#### What is stack and heap?
-
-- **Stack**: Automatic memory, fast, limited size
-- **Heap**: Dynamic memory, flexible, slower
-
-```cpp
-int x = 10;          // stack
-int* p = new int;   // heap
-delete p;
-```
-
----
-
-#### What is a memory leak?
-
-Memory allocated but not released.
-
-```cpp
-void leak() {
-    int* p = new int(5); // not deleted
-}
-```
-
-Avoid using smart pointers.
-
----
-
-#### What is dangling pointer?
-
-Pointer pointing to deallocated memory.
-
-```cpp
-int* p = new int(10);
-delete p;
-p = nullptr;
-```
-
----
-
-### Pointers and References
-
-#### Difference between pointer and reference
+### Difference between pointer and reference
 
 | Pointer | Reference |
 |-------|-----------|
@@ -106,9 +75,50 @@ int& r = x;
 
 ---
 
-### Object Oriented Programming
+## Memory Management
 
-#### What is a class and object?
+### Stack vs Heap
+
+- **Stack**: automatic memory, fast, limited size
+- **Heap**: dynamic memory, flexible, slower, manual or managed
+
+```cpp
+int x = 10;          // stack
+int* p = new int;    // heap
+delete p;
+```
+
+Low-latency systems prefer stack allocation when possible.
+
+### What is a memory leak?
+
+Memory allocated but never released.
+
+```cpp
+void leak() {
+    int* p = new int(5); // not deleted
+}
+```
+
+Use smart pointers to avoid leaks.
+
+### What is a dangling pointer?
+
+Pointer pointing to freed (deallocated) memory.
+
+```cpp
+int* p = new int(10);
+delete p;
+p = nullptr;
+```
+
+Always nullify pointers after deletion.
+
+---
+
+## Object-Oriented Programming
+
+### What is a class and object?
 
 ```cpp
 class Car {
@@ -119,9 +129,7 @@ public:
 Car c; // object
 ```
 
----
-
-#### What is encapsulation?
+### What is encapsulation?
 
 Binding data and methods together.
 
@@ -134,18 +142,14 @@ public:
 };
 ```
 
----
-
-#### What is inheritance?
+### What is inheritance?
 
 ```cpp
 class Animal {};
 class Dog : public Animal {};
 ```
 
----
-
-#### What is polymorphism?
+### What is polymorphism?
 
 Ability to take many forms.
 
@@ -161,11 +165,9 @@ public:
 };
 ```
 
----
+### What is a virtual function?
 
-#### What is virtual function?
-
-Function resolved at runtime using vtable.
+Function resolved at runtime using the vtable.
 
 ```cpp
 virtual void display();
@@ -173,9 +175,9 @@ virtual void display();
 
 ---
 
-### Constructors and Destructors
+## Constructors, RAII and Object Lifetime
 
-#### What is a constructor?
+### What is a constructor?
 
 Special function called on object creation.
 
@@ -186,300 +188,15 @@ public:
 };
 ```
 
----
+### What is a destructor?
 
-#### What is destructor?
-
-Called when object goes out of scope.
+Called when the object goes out of scope.
 
 ```cpp
 ~A() {}
 ```
 
----
-
-### Copy vs Move Semantics
-
-#### What is copy constructor?
-
-```cpp
-A(const A& other);
-```
-
----
-
-#### What is move constructor?
-
-Transfers ownership.
-
-```cpp
-A(A&& other) noexcept;
-```
-
-```cpp
-std::vector<int> v2 = std::move(v1);
-```
-
----
-
-### Templates
-
-#### What are templates?
-
-Templates support generic programming.
-
-```cpp
-template<typename T>
-T add(T a, T b) {
-    return a + b;
-}
-```
-
----
-
-### Exception Handling
-
-#### How does exception handling work?
-
-```cpp
-try {
-    throw std::runtime_error("error");
-}
-catch (const std::exception& e) {
-    std::cout << e.what();
-}
-```
-
----
-
-### Standard Template Library (STL)
-
-#### What is STL?
-
-STL consists of:
-
-- Containers
-- Algorithms
-- Iterators
-
----
-
-#### Example: vector and algorithm
-
-```cpp
-std::vector<int> v = {3,1,2};
-std::sort(v.begin(), v.end());
-```
-
----
-
-#### Difference between map and unordered_map
-
-| map | unordered_map |
-|----|---------------|
-| Ordered | Unordered |
-| O(log n) | O(1) avg |
-| Tree based | Hash based |
-
----
-
-### Smart Pointers
-
-#### What is unique_ptr?
-
-```cpp
-std::unique_ptr<int> p = std::make_unique<int>(5);
-```
-
----
-
-#### What is shared_ptr?
-
-```cpp
-std::shared_ptr<int> p1 = std::make_shared<int>(10);
-std::shared_ptr<int> p2 = p1;
-```
-
----
-
-#### What is weak_ptr?
-
-Prevents cyclic dependency.
-
----
-
-### Multithreading
-
-#### How do you create a thread?
-
-```cpp
-#include <thread>
-
-std::thread t([]{
-    // work
-});
-t.join();
-```
-
----
-
-#### What is mutex?
-
-Protects shared data.
-
-```cpp
-std::mutex m;
-std::lock_guard<std::mutex> lock(m);
-```
-
----
-
-### Modern C++ (C++11/14/17)
-
-#### What is constexpr?
-
-Compile-time evaluation.
-
-```cpp
-constexpr int square(int x) {
-    return x * x;
-}
-```
-
----
-
-#### Difference between const and constexpr
-
-| const | constexpr |
-|-----|-----------|
-| May be runtime | Compile-time |
-| No guarantee | Guaranteed |
-
----
-
-#### What is lambda expression?
-
-```cpp
-auto f = [](int x){ return x * x; };
-```
-
----
-
-### Database and SQL
-
-#### What is SQL?
-
-Structured Query Language.
-
-```sql
-SELECT * FROM users;
-```
-
----
-
-#### What is DDL?
-
-Defines schema.
-
-```sql
-CREATE TABLE users(id INT);
-```
-
----
-
-### Linux and Tooling
-
-#### What tools are commonly used?
-
-- gcc – compiler
-- gdb – debugger
-- git – version control
-
-```bash
-g++ main.cpp
-gdb ./a.out
-```
-
----
-
-### System and Low Latency Programming
-
-#### What is low latency programming?
-
-Focus on predictable execution.
-
-Techniques:
-- Avoid heap allocation
-- Avoid locks
-- Cache-friendly data
-
----
-
-### Design Patterns
-
-#### What is Singleton?
-
-```cpp
-class Singleton {
-public:
-    static Singleton& instance() {
-        static Singleton s;
-        return s;
-    }
-};
-```
-
----
-
-### Communication Skills (Interview Context)
-
-Engineers must:
-
-- Explain trade-offs
-- Justify design
-- Communicate clearly with business teams
-
----
-
-### Final Interview Tips
-
-- Prefer modern C++ features
-- Avoid raw pointers
-- Understand memory and threading deeply
-- Explain **why**, not just **how**
-
----
-
-### Conclusion
-
-This document covers **core to advanced C++ interview topics** with explanations and code.
-Mastering these areas prepares you for **system-level, low-latency, and modern C++ roles**.
-
----
-
-<a id="part-2"></a>
-
-*Part 2 — source: `scb_cplusplus_interview_questions_answers.md`*
-
-## Standard Chartered Bank (SCB) – C++ Technical Interview Questions & Answers
-
-### Introduction
-
-This document contains a curated list of **commonly asked technical interview questions at Standard Chartered Bank (SCB)** for C++ / systems / e-trading roles, along with **clear and practical answers**.
-
-Focus areas include:
-- Modern C++ (C++14/17)
-- Multithreading and concurrency
-- Memory management
-- STL usage and trade-offs
-- Low-latency and system design thinking
-- Linux and debugging basics
-
----
-
-### Core C++ Questions
-
-#### What is RAII and why is it important?
+### What is RAII and why is it important?
 
 RAII (Resource Acquisition Is Initialization) binds the lifetime of a resource to the lifetime of an object.
 
@@ -495,25 +212,18 @@ public:
 }; // file automatically closed
 ```
 
-RAII is fundamental for writing safe and exception-resilient C++ code.
-
----
-
-#### Difference between const and constexpr
-
-- `const` means the value cannot be modified
-- `constexpr` means the value can be evaluated at compile time
-
 ```cpp
-const int x = runtimeValue();
-constexpr int y = 10;
+#include <fstream>
+
+void writeFile() {
+    std::ofstream file("data.txt");
+    file << "Hello";
+} // file closed automatically
 ```
 
-`constexpr` enables compile-time computation and better optimization.
+RAII is fundamental for writing safe and exception-resilient C++ code.
 
----
-
-#### Explain Rule of 3 / 5 / 0
+### Explain Rule of 3 / 5 / 0
 
 If a class manages resources, it must define:
 
@@ -523,11 +233,91 @@ If a class manages resources, it must define:
 
 Rule of 0 is preferred in modern C++.
 
+### Copy vs Move Semantics
+
+Copy constructor:
+
+```cpp
+A(const A& other);
+```
+
+Move constructor — transfers ownership:
+
+```cpp
+A(A&& other) noexcept;
+```
+
+```cpp
+std::vector<int> v2 = std::move(v1);
+```
+
+Returning a local is moved, not copied:
+
+```cpp
+#include <vector>
+
+std::vector<int> create() {
+    std::vector<int> v = {1,2,3};
+    return v; // moved, not copied
+}
+```
+
 ---
 
-### STL and Containers
+## Templates and Exception Handling
 
-#### Difference between vector and list
+### What are templates?
+
+Templates support generic programming.
+
+```cpp
+template<typename T>
+T add(T a, T b) {
+    return a + b;
+}
+```
+
+### How does exception handling work?
+
+```cpp
+try {
+    throw std::runtime_error("error");
+}
+catch (const std::exception& e) {
+    std::cout << e.what();
+}
+```
+
+---
+
+## STL and Containers
+
+### What is STL?
+
+STL provides generic:
+
+- Containers
+- Algorithms
+- Iterators
+
+```cpp
+#include <vector>
+#include <algorithm>
+
+int main() {
+    std::vector<int> v = {4,1,3};
+    std::sort(v.begin(), v.end());
+}
+```
+
+Lambda with an algorithm:
+
+```cpp
+std::count_if(v.begin(), v.end(),
+              [](int x){ return x > 2; });
+```
+
+### Difference between vector and list
 
 | vector | list |
 |------|------|
@@ -538,9 +328,7 @@ Rule of 0 is preferred in modern C++.
 
 Trade-off: choose `vector` for performance, `list` for frequent middle insertions.
 
----
-
-#### map vs unordered_map
+### map vs unordered_map
 
 | map | unordered_map |
 |----|---------------|
@@ -552,9 +340,7 @@ Trade-off:
 - `map` when ordering is required
 - `unordered_map` when lookup speed matters
 
----
-
-#### Iterator invalidation – explain
+### Iterator invalidation – explain
 
 Some STL operations invalidate iterators.
 
@@ -568,238 +354,84 @@ Understanding iterator invalidation avoids subtle bugs.
 
 ---
 
-### Memory Management
+## Smart Pointers
 
-#### Stack vs Heap
-
-- Stack: fast, automatic, limited size
-- Heap: flexible, slower, manual or managed
-
-```cpp
-int x = 10;        // stack
-int* p = new int; // heap
-delete p;
-```
-
-Low-latency systems prefer stack allocation when possible.
-
----
-
-#### What is a memory leak?
-
-Memory allocated but never released.
-
-```cpp
-void leak() {
-    int* p = new int(5);
-}
-```
-
-Use smart pointers to avoid leaks.
-
----
-
-#### What is a dangling pointer?
-
-Pointer pointing to freed memory.
-
-```cpp
-int* p = new int(10);
-delete p;
-p = nullptr;
-```
-
-Always nullify pointers after deletion.
-
----
-
-### Smart Pointers
-
-#### unique_ptr vs shared_ptr
+### unique_ptr vs shared_ptr
 
 - `unique_ptr`: exclusive ownership, zero overhead
 - `shared_ptr`: reference-counted shared ownership
 
 ```cpp
-auto u = std::make_unique<int>(5);
-auto s = std::make_shared<int>(10);
+std::unique_ptr<int> u = std::make_unique<int>(5);
+
+std::shared_ptr<int> p1 = std::make_shared<int>(10);
+std::shared_ptr<int> p2 = p1;   // shared ownership
 ```
 
 Prefer `unique_ptr` unless sharing is required.
 
+### What is weak_ptr?
+
+A non-owning reference to a `shared_ptr` that prevents cyclic dependency.
+
 ---
 
-### Multithreading & Concurrency
+## Modern C++ (C++11/14/17)
 
-#### What is a race condition?
+Modern C++ improves safety and expressiveness.
 
-Occurs when multiple threads access shared data without synchronization.
+### What is constexpr?
+
+Compile-time evaluation.
 
 ```cpp
-int x = 0;
-void f() { x++; } // unsafe
+constexpr int square(int x) {
+    return x * x;
+}
 ```
 
-Must be protected using mutex or atomic operations.
-
----
-
-#### mutex vs spinlock
-
-- mutex: blocks thread, OS scheduling
-- spinlock: busy-waits, no context switch
-
-Trade-off:
-- mutex → safer, slower under contention
-- spinlock → faster for very short critical sections
-
----
-
-#### What is a deadlock?
-
-Threads wait indefinitely for each other.
-
-Common causes:
-- Circular wait
-- Multiple locks in different order
-
-Solution:
-- Consistent lock ordering
-- Scoped locking
-
----
-
-#### What is a condition variable?
-
-Used when a thread must wait for a condition to become true.
+C++14 allows loops in `constexpr` functions:
 
 ```cpp
-std::condition_variable cv;
+constexpr int factorial(int n) {
+    int r = 1;
+    for (int i = 1; i <= n; ++i)
+        r *= i;
+    return r;
+}
 ```
 
-Avoids busy-waiting.
+### Difference between const and constexpr
 
----
+| const | constexpr |
+|-----|-----------|
+| Value cannot be modified; may be runtime | Evaluated at compile time |
+| No compile-time guarantee | Guaranteed |
 
-### Low-Latency & System Design
+```cpp
+const int x = runtimeValue();
+constexpr int y = 10;
+```
 
-#### What is latency vs throughput?
+`constexpr` enables compile-time computation and better optimization.
 
-- Latency: time to process a single request
-- Throughput: number of requests per second
+### What is a lambda expression?
 
-Low-latency systems prioritize **predictability** over throughput.
+```cpp
+auto f = [](int x){ return x * x; };
+```
 
----
+Generic lambda (C++14):
 
-#### Why avoid heap allocation in hot paths?
-
-- Heap allocation is slow
-- Causes latency jitter
-- Involves locks internally
-
-Trade-off: reduced flexibility for predictable performance.
-
----
-
-#### TCP vs UDP
-
-- TCP: reliable, ordered, higher latency
-- UDP: fast, unordered, no guarantee
-
-Trading systems often use UDP for market data.
-
----
-
-### Linux & Debugging
-
-#### How do you debug a crash?
-
-- Check logs
-- Analyze core dump
-- Use gdb backtrace
-
-```bash
-gdb ./app core
-bt
+```cpp
+auto add = [](auto a, auto b) {
+    return a + b;
+};
 ```
 
 ---
 
-#### How do you detect memory leaks?
-
-- valgrind
-- sanitizers
-- code review and RAII usage
-
----
-
-### Python & SQL (Support Skills)
-
-#### Why Python is used with C++?
-
-- Automation
-- Testing
-- Monitoring
-- Tooling
-
-Python is not used in latency-critical paths.
-
----
-
-#### What is DDL?
-
-DDL defines database schema.
-
-```sql
-CREATE TABLE trades(id INT);
-```
-
----
-
-### Behavioral & Communication
-
-#### How do you explain trade-offs?
-
-A good answer explains:
-
-- Options
-- Pros and cons
-- Reason for final choice
-
-Example:
-> “I chose unordered_map for faster lookup, trading ordering and memory usage for speed.”
-
----
-
-### Final Interview Advice
-
-SCB values:
-- Clear thinking
-- Safe code
-- Trade-off awareness
-- Communication clarity
-
-They do NOT value:
-- Memorized answers
-- Overconfidence
-- Guesswork
-
----
-
-### Conclusion
-
-Preparing these questions with **deep understanding** and **clear explanations** aligns strongly with SCB’s interview expectations for C++ and systems roles.
-
----
-
-<a id="part-3"></a>
-
-*Part 3 — source: `scb_skills_and_qualifications.md`*
-
-## Technical Skills with Code Examples (C++ / Systems / Python / Database)
-
-### Multithreading
+## Multithreading and Concurrency
 
 Multithreading allows concurrent execution of multiple threads within a process.
 
@@ -808,7 +440,7 @@ Key goals:
 - Reduce latency
 - Utilize multi-core CPUs
 
-#### Example: Basic Thread Creation
+### How do you create a thread?
 
 ```cpp
 #include <thread>
@@ -821,10 +453,28 @@ void worker() {
 int main() {
     std::thread t(worker);
     t.join();
+
+    std::thread t2([]{
+        // work
+    });
+    t2.join();
 }
 ```
 
-#### Example: Synchronization Using Mutex
+### What is a race condition?
+
+Occurs when multiple threads access shared data without synchronization.
+
+```cpp
+int x = 0;
+void f() { x++; } // unsafe
+```
+
+Must be protected using a mutex or atomic operations.
+
+### What is a mutex?
+
+Protects shared data.
 
 ```cpp
 #include <mutex>
@@ -846,71 +496,147 @@ int main() {
 }
 ```
 
----
+### mutex vs spinlock
 
-### C++
+- mutex: blocks thread, OS scheduling
+- spinlock: busy-waits, no context switch
 
-C++ is a systems programming language providing low-level control with high-level abstractions.
+Trade-off:
+- mutex → safer, slower under contention
+- spinlock → faster for very short critical sections
 
-Key concepts:
-- RAII
-- Move semantics
-- Zero-cost abstractions
+### What is a deadlock?
 
-#### Example: RAII for Resource Management
+Threads wait indefinitely for each other.
+
+Common causes:
+- Circular wait
+- Multiple locks in different order
+
+Solution:
+- Consistent lock ordering
+- Scoped locking
+
+### What is a condition variable?
+
+Used when a thread must wait for a condition to become true. Avoids busy-waiting.
 
 ```cpp
-#include <fstream>
-
-void writeFile() {
-    std::ofstream file("data.txt");
-    file << "Hello";
-} // file closed automatically
-```
-
-#### Example: Move Semantics
-
-```cpp
-#include <vector>
-
-std::vector<int> create() {
-    std::vector<int> v = {1,2,3};
-    return v; // moved, not copied
-}
+std::condition_variable cv;
 ```
 
 ---
 
-### Standard Template Library (STL)
+## Low-Latency and System Design
 
-STL provides generic containers, algorithms, and iterators.
+### What is low-latency programming?
 
-#### Example: Container + Algorithm
+Focus on predictable execution time.
+
+Techniques:
+- Avoid heap allocation
+- Avoid locks
+- Cache-friendly data
 
 ```cpp
-#include <vector>
-#include <algorithm>
-
-int main() {
-    std::vector<int> v = {4,1,3};
-    std::sort(v.begin(), v.end());
-}
+int buffer[1024]; // stack allocation, no dynamic allocation in hot path
 ```
 
-#### Example: Lambda with Algorithm
+### What is latency vs throughput?
+
+- Latency: time to process a single request
+- Throughput: number of requests per second
+
+Low-latency systems prioritize **predictability** over throughput.
+
+### Why avoid heap allocation in hot paths?
+
+- Heap allocation is slow
+- Causes latency jitter
+- Involves locks internally
+
+Trade-off: reduced flexibility for predictable performance.
+
+### TCP vs UDP
+
+- TCP: reliable, ordered, higher latency
+- UDP: fast, unordered, best-effort, no guarantee
+
+Trading systems often use UDP for market data. System-level networking uses POSIX sockets:
 
 ```cpp
-std::count_if(v.begin(), v.end(),
-              [](int x){ return x > 2; });
+#include <sys/socket.h>
+#include <netinet/in.h>
+```
+
+### Distributed Systems Architecture
+
+Distributed systems involve multiple cooperating processes.
+
+Key ideas:
+- Stateless services
+- Horizontal scaling
+- Failure handling
+
+```text
+Producer --> Message Queue --> Consumer
 ```
 
 ---
 
-### Boost Libraries
+## Linux, Tooling and Debugging
+
+### What tools are commonly used?
+
+- gcc – compiler
+- gdb – debugger
+- git – version control
+
+```bash
+g++ -g main.cpp -o app
+gdb ./app
+```
+
+### How do you debug a crash?
+
+- Check logs
+- Analyze core dump
+- Use gdb backtrace
+
+```bash
+gdb ./app core
+bt
+```
+
+### How do you detect memory leaks?
+
+- valgrind
+- sanitizers
+- code review and RAII usage
+
+---
+
+## Design Patterns
+
+### What is Singleton?
+
+```cpp
+class Singleton {
+public:
+    static Singleton& instance() {
+        static Singleton s;
+        return s;
+    }
+};
+```
+
+---
+
+## Boost Libraries
 
 Boost extends the C++ standard library.
 
-#### Example: Boost.Optional
+### Boost.Optional
 
 ```cpp
 #include <boost/optional.hpp>
@@ -921,7 +647,7 @@ boost::optional<int> getValue(bool ok) {
 }
 ```
 
-#### Example: Boost.Asio (Timer)
+### Boost.Asio (Timer)
 
 ```cpp
 #include <boost/asio.hpp>
@@ -935,11 +661,16 @@ int main() {
 
 ---
 
-### Python
+## Python (Support Skill)
 
-Python is used for tooling, automation, and scripting.
+### Why is Python used with C++?
 
-#### Example: Simple Automation Script
+- Automation
+- Testing
+- Monitoring
+- Tooling and scripting
+
+Python is not used in latency-critical paths.
 
 ```python
 import os
@@ -948,8 +679,6 @@ for file in os.listdir("."):
     print(file)
 ```
 
-#### Example: Simple Function
-
 ```python
 def add(a, b):
     return a + b
@@ -957,153 +686,78 @@ def add(a, b):
 
 ---
 
-### Database (SQL)
+## Database and SQL
 
 Relational databases store structured data with ACID guarantees.
 
-#### Example: Basic SQL Query
+### What is SQL?
+
+Structured Query Language.
 
 ```sql
+SELECT * FROM users;
+
 SELECT name, salary
 FROM employee
 WHERE salary > 50000;
 ```
 
-#### Example: Simple DDL Operation
+### What is DDL?
+
+DDL (Data Definition Language) defines the database schema.
 
 ```sql
 CREATE TABLE orders (
     id INT PRIMARY KEY,
     amount DECIMAL(10,2)
 );
-```
 
----
-
-### Modern C++14 / C++17 Features
-
-Modern C++ improves safety and expressiveness.
-
-#### Example: Generic Lambda (C++14)
-
-```cpp
-auto add = [](auto a, auto b) {
-    return a + b;
-};
-```
-
-#### Example: constexpr Function (C++14)
-
-```cpp
-constexpr int factorial(int n) {
-    int r = 1;
-    for (int i = 1; i <= n; ++i)
-        r *= i;
-    return r;
-}
-```
-
----
-
-### System, Network, and Low-Latency Programming
-
-Low-latency systems prioritize predictable execution time.
-
-#### Example: Avoid Dynamic Allocation in Hot Path
-
-```cpp
-int buffer[1024]; // stack allocation
-```
-
-#### Example: TCP Socket (POSIX)
-
-```cpp
-#include <sys/socket.h>
-#include <netinet/in.h>
-```
-
-(Used for system-level networking.)
-
----
-
-### Linux Development Environment
-
-Linux provides powerful development tools.
-
-#### Example: Compile and Debug
-
-```bash
-g++ -g main.cpp -o app
-gdb ./app
-```
-
----
-
-### Distributed Systems Architecture
-
-Distributed systems involve multiple cooperating processes.
-
-Key ideas:
-- Stateless services
-- Horizontal scaling
-- Failure handling
-
-#### Example: Simple Producer-Consumer Concept
-
-```text
-Producer --> Message Queue --> Consumer
-```
-
----
-
-### Messaging and Communication Protocols
-
-Protocols define how data is transmitted.
-
-#### Example: TCP vs UDP Concept
-
-```text
-TCP: Reliable, ordered
-UDP: Fast, best-effort
-```
-
----
-
-### SQL and DDL Operations
-
-DDL defines schema structure.
-
-#### Example: Alter Table
-
-```sql
 ALTER TABLE orders
 ADD COLUMN created_at TIMESTAMP;
 ```
 
 ---
 
-### Communication Skills (Technical Context)
+## Communication and Behavioral
 
-Engineers must communicate:
+Engineers must communicate clearly — including with business teams:
 
-- Design decisions
+- Design decisions and their justification
 - Trade-offs
 - Risks
 - Implementation details
 
 Clear documentation and discussions reduce system failures.
 
+### How do you explain trade-offs?
+
+A good answer explains:
+
+- Options
+- Pros and cons
+- Reason for final choice
+
+Example:
+> “I chose unordered_map for faster lookup, trading ordering and memory usage for speed.”
+
 ---
 
-### Final Summary
+## Final Interview Advice
 
-This document demonstrates:
+- Prefer modern C++ features
+- Avoid raw pointers
+- Understand memory and threading deeply
+- Explain **why**, not just **how**
 
-- Practical multithreading in C++
-- Modern C++14/17 usage
-- STL and Boost proficiency
-- Python scripting support
-- Database and SQL fundamentals
-- Systems and low-latency awareness
+SCB values:
+- Clear thinking
+- Safe code
+- Trade-off awareness
+- Communication clarity
 
-These skills are essential for building **high-performance, scalable, and reliable systems**.
+They do NOT value:
+- Memorized answers
+- Overconfidence
+- Guesswork
+
+Mastering these areas with **deep understanding** and **clear explanations** prepares you for **system-level, low-latency, and modern C++ roles**.
