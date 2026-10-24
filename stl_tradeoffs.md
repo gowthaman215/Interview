@@ -1,24 +1,20 @@
-= STL Trade-offs in C++
-:toc:
-:toclevels: 3
-:sectnums:
-:source-highlighter: coderay
+# STL Trade-offs in C++
 
-== Introduction
+## Introduction
 
 STL trade-offs refer to the conscious decisions made when choosing STL containers, algorithms, and utilities by balancing:
 
-* Performance
-* Memory usage
-* Predictability
-* Safety
-* Flexibility
+- Performance
+- Memory usage
+- Predictability
+- Safety
+- Flexibility
 
 No STL container or algorithm is universally best; each choice involves compromises.
 
 ---
 
-== vector vs list
+## vector vs list
 
 | Aspect | vector | list |
 |------|--------|------|
@@ -29,14 +25,14 @@ No STL container or algorithm is universally best; each choice involves compromi
 | Memory overhead | Low | High |
 
 Trade-off:
-* `vector` offers speed and cache locality
-* `list` offers efficient insertions/deletions
+- `vector` offers speed and cache locality
+- `list` offers efficient insertions/deletions
 
 Preferred choice in most systems: `vector`
 
 ---
 
-== vector vs deque
+## vector vs deque
 
 | Aspect | vector | deque |
 |------|--------|-------|
@@ -47,12 +43,12 @@ Preferred choice in most systems: `vector`
 | Cache locality | Best | Good |
 
 Trade-off:
-* `deque` supports efficient insertion at both ends
-* `vector` provides better cache performance
+- `deque` supports efficient insertion at both ends
+- `vector` provides better cache performance
 
 ---
 
-== map vs unordered_map
+## map vs unordered_map
 
 | Aspect | map | unordered_map |
 |------|-----|---------------|
@@ -63,12 +59,12 @@ Trade-off:
 | Cache friendliness | Poor | Better |
 
 Trade-off:
-* `map` provides ordering and predictable performance
-* `unordered_map` provides faster average lookup at the cost of memory
+- `map` provides ordering and predictable performance
+- `unordered_map` provides faster average lookup at the cost of memory
 
 ---
 
-== set vs unordered_set
+## set vs unordered_set
 
 | Aspect | set | unordered_set |
 |------|-----|---------------|
@@ -81,7 +77,7 @@ Trade-off mirrors `map` vs `unordered_map`.
 
 ---
 
-== array vs vector
+## array vs vector
 
 | Aspect | array | vector |
 |------|-------|--------|
@@ -91,71 +87,66 @@ Trade-off mirrors `map` vs `unordered_map`.
 | Resize capability | No | Yes |
 
 Trade-off:
-* `array` offers predictability and zero overhead
-* `vector` offers flexibility and dynamic resizing
+- `array` offers predictability and zero overhead
+- `vector` offers flexibility and dynamic resizing
 
 Low-latency systems prefer `array` where size is known.
 
 ---
 
-== Algorithms vs Custom Loops
+## Algorithms vs Custom Loops
 
-[source,cpp]
-----
+```cpp
 std::sort(v.begin(), v.end());
-----
+```
 
 vs
 
-[source,cpp]
-----
+```cpp
 // Custom hand-written loop
-----
+```
 
 Trade-off:
-* STL algorithms are safer and more readable
-* Custom loops allow fine-grained micro-optimizations
+- STL algorithms are safer and more readable
+- Custom loops allow fine-grained micro-optimizations
 
 Best practice: use STL first, optimize only if required.
 
 ---
 
-== Iterators vs Indexing
+## Iterators vs Indexing
 
-[source,cpp]
-----
+```cpp
 for (auto it = v.begin(); it != v.end(); ++it)
-----
+```
 
 vs
 
-[source,cpp]
-----
+```cpp
 for (size_t i = 0; i < v.size(); ++i)
-----
+```
 
 Trade-off:
-* Iterators are generic and container-independent
-* Indexing can be simpler and sometimes faster
+- Iterators are generic and container-independent
+- Indexing can be simpler and sometimes faster
 
 ---
 
-== Smart Pointers in STL Containers
+## Smart Pointers in STL Containers
 
-[source,cpp]
-----
+```cpp
 std::vector<std::unique_ptr<Foo>>
-----
+```
 
 Trade-off:
-* Ensures clear ownership and safety
-* Introduces slight indirection cost
+- Ensures clear ownership and safety
+- Introduces slight indirection cost
 
 Modern C++ favors ownership clarity over raw pointers.
 
 ---
 
-== Memory vs Speed (Summary)
+## Memory vs Speed (Summary)
 
 | Choice | Gain | Cost |
 |------|------|------|
@@ -167,19 +158,18 @@ Modern C++ favors ownership clarity over raw pointers.
 
 ---
 
-== Interview-Oriented Explanation
+## Interview-Oriented Explanation
 
 A strong interview answer explains:
-* Available options
-* Pros and cons
-* Reason for the final choice
+- Available options
+- Pros and cons
+- Reason for the final choice
 
 Example:
 > "I chose unordered_map for faster lookup, trading ordering and higher memory usage for performance, which suits a low-latency requirement."
 
 ---
 
-== One-Line Summary
+## One-Line Summary
 
 STL trade-offs are the deliberate compromises between performance, memory usage, predictability, and flexibility when selecting containers or algorithms in C++.
-

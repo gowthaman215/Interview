@@ -1,46 +1,41 @@
-= POSIX Threads (pthreads) – Complete Multithreading Reference with Examples
-:toc:
-:toclevels: 4
-:sectnums:
-:source-highlighter: coderay
+# POSIX Threads (pthreads) – Complete Multithreading Reference with Examples
 
-== Introduction
+## Introduction
 
 POSIX Threads (pthreads) is a low-level threading API provided by POSIX-compliant operating systems.
 It is widely used in system programming, high-performance systems, and legacy C/C++ codebases.
 
 Unlike std::thread, pthreads require explicit management of:
-* Thread lifecycle
-* Synchronization
-* Memory visibility
-* Error handling
+- Thread lifecycle
+- Synchronization
+- Memory visibility
+- Error handling
 
 Understanding pthreads demonstrates strong system-level knowledge.
 
 ---
 
-== Thread Basics
+## Thread Basics
 
-=== What Is a pthread?
+### What Is a pthread?
 
 A pthread represents a lightweight thread of execution within a process.
 All threads share:
-* Address space
-* Heap
-* Global variables
+- Address space
+- Heap
+- Global variables
 
 Each thread has:
-* Its own stack
-* Its own registers
+- Its own stack
+- Its own registers
 
 ---
 
-== Creating Threads
+## Creating Threads
 
-=== pthread_create
+### pthread_create
 
-[source,c]
-----
+```c
 #include <pthread.h>
 #include <stdio.h>
 
@@ -55,45 +50,42 @@ int main() {
     pthread_join(thread, NULL);
     return 0;
 }
-----
+```
 
 Key points:
-* Thread starts immediately after creation
-* Function must return void*
-* Arguments passed via void*
+- Thread starts immediately after creation
+- Function must return void*
+- Arguments passed via void*
 
 ---
 
-== Joining vs Detaching Threads
+## Joining vs Detaching Threads
 
-=== pthread_join
+### pthread_join
 
 Blocks until the thread exits.
 
-[source,c]
-----
+```c
 pthread_join(thread, NULL);
-----
+```
 
 ---
 
-=== pthread_detach
+### pthread_detach
 
 Thread resources released automatically on exit.
 
-[source,c]
-----
+```c
 pthread_detach(thread);
-----
+```
 
 Detached threads must never access objects that may go out of scope.
 
 ---
 
-== Passing Arguments to Threads
+## Passing Arguments to Threads
 
-[source,c]
-----
+```c
 void* print_value(void* arg) {
     int value = *(int*)arg;
     printf("%d\n", value);
@@ -106,38 +98,36 @@ int main() {
     pthread_create(&t, NULL, print_value, &x);
     pthread_join(t, NULL);
 }
-----
+```
 
 Caller must ensure argument lifetime.
 
 ---
 
-== Race Conditions
+## Race Conditions
 
-=== Unsafe Shared Access
+### Unsafe Shared Access
 
-[source,c]
-----
+```c
 int counter = 0;
 
 void* increment(void*) {
     counter++;  // race condition
     return NULL;
 }
-----
+```
 
 Multiple threads updating shared data without synchronization leads to undefined behavior.
 
 ---
 
-== Mutex
+## Mutex
 
-=== pthread_mutex_t
+### pthread_mutex_t
 
 Mutex provides mutual exclusion.
 
-[source,c]
-----
+```c
 #include <pthread.h>
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -149,33 +139,30 @@ void* increment(void*) {
     pthread_mutex_unlock(&mutex);
     return NULL;
 }
-----
+```
 
 ---
 
-=== Mutex Initialization
+### Mutex Initialization
 
-[source,c]
-----
+```c
 pthread_mutex_t m;
 pthread_mutex_init(&m, NULL);
-----
+```
 
 Always destroy mutex when done:
 
-[source,c]
-----
+```c
 pthread_mutex_destroy(&m);
-----
+```
 
 ---
 
-== Deadlock
+## Deadlock
 
-=== Deadlock Example
+### Deadlock Example
 
-[source,c]
-----
+```c
 pthread_mutex_t m1, m2;
 
 void* f1(void*) {
@@ -189,40 +176,38 @@ void* f2(void*) {
     pthread_mutex_lock(&m1);
     return NULL;
 }
-----
+```
 
 Deadlock occurs due to inconsistent lock ordering.
 
 ---
 
-=== Avoiding Deadlock
+### Avoiding Deadlock
 
-* Enforce consistent lock order
-* Use trylock
-* Reduce lock scope
+- Enforce consistent lock order
+- Use trylock
+- Reduce lock scope
 
-[source,c]
-----
+```c
 if (pthread_mutex_trylock(&m1) == 0) {
     pthread_mutex_trylock(&m2);
 }
-----
+```
 
 ---
 
-== Condition Variables
+## Condition Variables
 
-=== Why Condition Variables?
+### Why Condition Variables?
 
 Used to block threads until a condition becomes true.
 Avoids busy-waiting.
 
 ---
 
-=== Producer-Consumer Example
+### Producer-Consumer Example
 
-[source,c]
-----
+```c
 #include <pthread.h>
 #include <stdio.h>
 
@@ -246,29 +231,27 @@ void* consumer(void*) {
     pthread_mutex_unlock(&mutex);
     return NULL;
 }
-----
+```
 
 ---
 
-== Thread Cancellation
+## Thread Cancellation
 
-=== pthread_cancel
+### pthread_cancel
 
-[source,c]
-----
+```c
 pthread_cancel(thread);
-----
+```
 
 Thread must reach a cancellation point.
 
 ---
 
-== Thread-Specific Data (TLS)
+## Thread-Specific Data (TLS)
 
-=== Thread-Local Storage
+### Thread-Local Storage
 
-[source,c]
-----
+```c
 pthread_key_t key;
 
 void destructor(void* value) {
@@ -283,42 +266,41 @@ void* thread_func(void*) {
     pthread_setspecific(key, data);
     return NULL;
 }
-----
+```
 
 Each thread gets its own data copy.
 
 ---
 
-== Atomic Operations (pthreads + GCC)
+## Atomic Operations (pthreads + GCC)
 
 Atomic operations prevent race conditions without mutexes.
 
-[source,c]
-----
+```c
 __sync_fetch_and_add(&counter, 1);
-----
+```
 
 Preferred modern approach: C11 atomics.
 
 ---
 
-== Memory Visibility
+## Memory Visibility
 
 pthread mutex and condition variables enforce memory barriers.
 Unlocking a mutex guarantees visibility to the next locking thread.
 
 ---
 
-== Performance Considerations
+## Performance Considerations
 
-* Mutex locking is expensive
-* Context switches cost CPU cycles
-* Avoid fine-grained locking
-* Avoid false sharing
+- Mutex locking is expensive
+- Context switches cost CPU cycles
+- Avoid fine-grained locking
+- Avoid false sharing
 
 ---
 
-== pthread vs std::thread
+## pthread vs std::thread
 
 | Feature | pthread | std::thread |
 |------|--------|------------|
@@ -331,7 +313,7 @@ pthreads offer more control but require discipline.
 
 ---
 
-== Low-Latency Trade-offs
+## Low-Latency Trade-offs
 
 | Choice | Gain | Cost |
 |-----|------|-----|
@@ -342,45 +324,44 @@ pthreads offer more control but require discipline.
 
 ---
 
-== Common Interview Questions
+## Common Interview Questions
 
-=== What happens if mutex is not unlocked?
+### What happens if mutex is not unlocked?
 
 Deadlock or resource starvation.
 
 ---
 
-=== Can mutex be copied?
+### Can mutex be copied?
 
 No. pthread mutexes are non-copyable.
 
 ---
 
-=== Why use condition variables instead of sleep?
+### Why use condition variables instead of sleep?
 
 sleep wastes CPU and adds latency.
 
 ---
 
-== Best Practices
+## Best Practices
 
-* Always check return codes
-* Use mutex + condition variables together
-* Avoid detached threads
-* Minimize shared state
-* Destroy synchronization objects
-* Prefer std::thread unless pthread control is required
+- Always check return codes
+- Use mutex + condition variables together
+- Avoid detached threads
+- Minimize shared state
+- Destroy synchronization objects
+- Prefer std::thread unless pthread control is required
 
 ---
 
-== Interview-Grade Explanation
+## Interview-Grade Explanation
 
-> pthreads provide low-level control over thread creation, synchronization, and memory visibility.  
+> pthreads provide low-level control over thread creation, synchronization, and memory visibility.
 > Correct usage requires explicit lifecycle management and strict discipline to avoid race conditions, deadlocks, and undefined behavior.
 
 ---
 
-== One-Line Takeaway
+## One-Line Takeaway
 
 POSIX Threads offer powerful, low-level concurrency control but demand precise design, careful synchronization, and deep understanding of thread lifetimes.
-

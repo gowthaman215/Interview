@@ -1,123 +1,114 @@
-= Boost.Asio in Real-Time Applications — Complete Practical Guide
-:toc:
-:toclevels: 4
-:sectnums:
-:source-highlighter: coderay
+# Boost.Asio in Real-Time Applications — Complete Practical Guide
 
-== Introduction
+## Introduction
 
 Boost.Asio is a cross-platform C++ library for asynchronous I/O.
 It is widely used in **real-time, low-latency, high-throughput systems** such as:
 
-* Trading systems
-* Market data handlers
-* Order gateways
-* Network servers
-* Real-time messaging systems
+- Trading systems
+- Market data handlers
+- Order gateways
+- Network servers
+- Real-time messaging systems
 
 Boost.Asio enables scalable, event-driven designs without blocking threads.
 
 ---
 
-== What "Real-Time" Means Here
+## What "Real-Time" Means Here
 
-In Boost.Asio context, *real-time* does NOT mean hard real-time systems.
+In Boost.Asio context, **real-time** does NOT mean hard real-time systems.
 It means:
 
-* Low and predictable latency
-* Non-blocking execution
-* High throughput
-* Efficient CPU utilization
-* Minimal context switching
+- Low and predictable latency
+- Non-blocking execution
+- High throughput
+- Efficient CPU utilization
+- Minimal context switching
 
 Typical requirement:
 > “Process incoming data as fast as possible without blocking.”
 
 ---
 
-== Why Boost.Asio Is Used in Real-Time Systems
+## Why Boost.Asio Is Used in Real-Time Systems
 
 Key reasons:
 
-* Asynchronous, non-blocking I/O
-* Event-driven architecture
-* Avoids one-thread-per-connection model
-* Scales to thousands of connections
-* Precise control over execution flow
-* Mature, battle-tested implementation
+- Asynchronous, non-blocking I/O
+- Event-driven architecture
+- Avoids one-thread-per-connection model
+- Scales to thousands of connections
+- Precise control over execution flow
+- Mature, battle-tested implementation
 
 Boost.Asio is used heavily in **finance and networking** because blocking calls are unacceptable.
 
 ---
 
-== Core Concepts of Boost.Asio
+## Core Concepts of Boost.Asio
 
-=== io_context
+### io_context
 
 `io_context` is the heart of Boost.Asio.
 It represents an **event loop**.
 
-[source,cpp]
-----
+```cpp
 boost::asio::io_context io;
 io.run();
-----
+```
 
 Responsibilities:
-* Dispatches asynchronous handlers
-* Manages OS I/O events
-* Executes callbacks
+- Dispatches asynchronous handlers
+- Manages OS I/O events
+- Executes callbacks
 
 Without `io.run()`, nothing happens.
 
 ---
 
-=== Asynchronous Operations
+### Asynchronous Operations
 
 Boost.Asio uses **callbacks (handlers)** instead of blocking calls.
 
 Instead of:
-[source,cpp]
-----
+```cpp
 socket.read(...)
-----
+```
 
 We use:
-[source,cpp]
-----
+```cpp
 socket.async_read_some(..., handler);
-----
+```
 
 This allows the thread to continue doing other work.
 
 ---
 
-=== Handlers
+### Handlers
 
 A handler is a function that is called when an async operation completes.
 
-[source,cpp]
-----
+```cpp
 void handler(const boost::system::error_code& ec, std::size_t bytes);
-----
+```
 
 Handlers run inside the `io_context` execution loop.
 
 ---
 
-== Real-Time Example: Asynchronous TCP Server
+## Real-Time Example: Asynchronous TCP Server
 
 This example represents a **real trading-style TCP server** that:
-* Accepts connections
-* Reads messages
-* Responds without blocking
+- Accepts connections
+- Reads messages
+- Responds without blocking
 
 ---
 
-=== TCP Server (Asynchronous)
+### TCP Server (Asynchronous)
 
-[source,cpp]
-----
+```cpp
 #include <boost/asio.hpp>
 #include <iostream>
 
@@ -159,14 +150,13 @@ private:
             });
     }
 };
-----
+```
 
 ---
 
-=== Server Acceptor
+### Server Acceptor
 
-[source,cpp]
-----
+```cpp
 class Server {
     tcp::acceptor acceptor_;
 
@@ -187,131 +177,125 @@ private:
             });
     }
 };
-----
+```
 
 ---
 
-=== main()
+### main()
 
-[source,cpp]
-----
+```cpp
 int main() {
     boost::asio::io_context io;
     Server server(io, 9000);
     io.run();
 }
-----
+```
 
 ---
 
-== Why This Design Is Real-Time Friendly
+## Why This Design Is Real-Time Friendly
 
-* No blocking calls
-* No per-connection threads
-* Single-threaded event loop possible
-* Predictable execution
-* High throughput
+- No blocking calls
+- No per-connection threads
+- Single-threaded event loop possible
+- Predictable execution
+- High throughput
 
 This pattern is used in **market data feeds and order gateways**.
 
 ---
 
-== Threading Model in Boost.Asio
+## Threading Model in Boost.Asio
 
 Boost.Asio supports multiple models:
 
-=== Single-threaded io_context
+### Single-threaded io_context
 
-[source,cpp]
-----
+```cpp
 io.run();
-----
+```
 
-* Lowest latency
-* Deterministic
-* Used in latency-critical paths
+- Lowest latency
+- Deterministic
+- Used in latency-critical paths
 
 ---
 
-=== Multi-threaded io_context
+### Multi-threaded io_context
 
-[source,cpp]
-----
+```cpp
 std::thread t1([&]{ io.run(); });
 std::thread t2([&]{ io.run(); });
-----
+```
 
-* Higher throughput
-* Shared event loop
-* Requires careful handler design
+- Higher throughput
+- Shared event loop
+- Requires careful handler design
 
 ---
 
-== Strands (Critical for Safety)
+## Strands (Critical for Safety)
 
 A strand guarantees **serialized handler execution**.
 
-[source,cpp]
-----
+```cpp
 boost::asio::strand<boost::asio::io_context::executor_type> strand(io.get_executor());
-----
+```
 
 Used to:
-* Avoid locks
-* Prevent race conditions
-* Maintain order
+- Avoid locks
+- Prevent race conditions
+- Maintain order
 
 Essential in real-time systems.
 
 ---
 
-== Timers (Heartbeat, Timeout)
+## Timers (Heartbeat, Timeout)
 
 Timers are heavily used for:
-* Heartbeats
-* Timeouts
-* Retry logic
+- Heartbeats
+- Timeouts
+- Retry logic
 
-[source,cpp]
-----
+```cpp
 boost::asio::steady_timer timer(io, std::chrono::seconds(1));
 timer.async_wait([](auto){});
-----
+```
 
 ---
 
-== Error Handling Strategy
+## Error Handling Strategy
 
 In real-time systems:
-* Errors must not crash the event loop
-* Recovery must be fast
+- Errors must not crash the event loop
+- Recovery must be fast
 
 Typical pattern:
-[source,cpp]
-----
+```cpp
 if (ec) {
     // log
     // cleanup
     // continue
 }
-----
+```
 
 ---
 
-== Performance Considerations
+## Performance Considerations
 
 Key rules:
 
-* Avoid dynamic allocation in handlers
-* Reuse buffers
-* Keep handlers short
-* Avoid locks in handlers
-* Use strands instead of mutexes
-* Pin io_context to CPU core (advanced)
+- Avoid dynamic allocation in handlers
+- Reuse buffers
+- Keep handlers short
+- Avoid locks in handlers
+- Use strands instead of mutexes
+- Pin io_context to CPU core (advanced)
 
 ---
 
-== Boost.Asio vs Blocking I/O
+## Boost.Asio vs Blocking I/O
 
 | Blocking I/O | Boost.Asio |
 |------------|-----------|
@@ -322,37 +306,36 @@ Key rules:
 
 ---
 
-== Relationship to C++ Standard Networking
+## Relationship to C++ Standard Networking
 
 Boost.Asio is the **reference design** for future C++ networking (`std::net`).
 
 However:
-* Boost.Asio is more mature
-* std networking is not fully standardized yet
-* Production systems still use Boost.Asio
+- Boost.Asio is more mature
+- std networking is not fully standardized yet
+- Production systems still use Boost.Asio
 
 ---
 
-== Real-World Use Cases
+## Real-World Use Cases
 
 Boost.Asio is used in:
 
-* Trading gateways
-* Market data handlers
-* FIX engines
-* Real-time monitoring systems
-* High-performance servers
+- Trading gateways
+- Market data handlers
+- FIX engines
+- Real-time monitoring systems
+- High-performance servers
 
 ---
 
-== Interview-Grade Explanation
+## Interview-Grade Explanation
 
-> “Boost.Asio is used in real-time systems because it provides asynchronous, event-driven I/O with minimal blocking and predictable latency.  
+> “Boost.Asio is used in real-time systems because it provides asynchronous, event-driven I/O with minimal blocking and predictable latency.
 > It allows scaling to thousands of connections using a small number of threads, which is critical for trading and network-heavy applications.”
 
 ---
 
-== One-Line Takeaway
+## One-Line Takeaway
 
 Boost.Asio enables scalable, low-latency, event-driven real-time systems by eliminating blocking I/O and efficiently utilizing system resources.
-

@@ -1,380 +1,346 @@
-= Bash Shell Scripting — Complete Reference (Basic, Core, Advanced)
-:toc:
-:toclevels: 4
-:sectnums:
-:source-highlighter: coderay
+# Bash Shell Scripting — Complete Reference (Basic, Core, Advanced)
 
-== Introduction
+## Introduction
 
 Bash (Bourne Again SHell) is a Unix shell and command language.
 It is widely used for:
 
-* System automation
-* Deployment scripts
-* Monitoring and maintenance
-* DevOps pipelines
-* Daily Linux operations
+- System automation
+- Deployment scripts
+- Monitoring and maintenance
+- DevOps pipelines
+- Daily Linux operations
 
 Bash scripts execute commands sequentially in a shell environment.
 
 ---
 
-== BASIC BASH CONCEPTS
+## BASIC BASH CONCEPTS
 
-== What Is a Shell?
+## What Is a Shell?
 
 A shell:
-* Interprets user commands
-* Interacts with the OS kernel
-* Executes programs
+- Interprets user commands
+- Interacts with the OS kernel
+- Executes programs
 
 Common shells:
-* bash
-* sh
-* zsh
-* fish
+- bash
+- sh
+- zsh
+- fish
 
 ---
 
-== First Bash Script
+## First Bash Script
 
-[source,bash]
-----
+```bash
 #!/bin/bash
 echo "Hello, Bash"
-----
+```
 
 Make executable:
-[source,bash]
-----
+```bash
 chmod +x script.sh
 ./script.sh
-----
+```
 
 ---
 
-== Variables
+## Variables
 
-[source,bash]
-----
+```bash
 name="Linux"
 echo $name
-----
+```
 
 Rules:
-* No spaces around `=`
-* Access using `$`
+- No spaces around `=`
+- Access using `$`
 
 ---
 
-== Command Substitution
+## Command Substitution
 
-[source,bash]
-----
+```bash
 date_now=$(date)
 echo $date_now
-----
+```
 
 ---
 
-== User Input
+## User Input
 
-[source,bash]
-----
+```bash
 read -p "Enter name: " name
 echo "Hello $name"
-----
+```
 
 ---
 
-== Positional Parameters
+## Positional Parameters
 
-[source,bash]
-----
+```bash
 echo $0   # script name
 echo $1   # first argument
 echo $@   # all arguments
-----
+```
 
 ---
 
-== Exit Status
+## Exit Status
 
-[source,bash]
-----
+```bash
 ls /tmp
 echo $?   # 0 = success
-----
+```
 
 ---
 
-== CORE BASH CONCEPTS
+## CORE BASH CONCEPTS
 
-== Conditional Statements
+## Conditional Statements
 
-=== if / else
+### if / else
 
-[source,bash]
-----
+```bash
 if [ $x -gt 10 ]; then
     echo "Greater"
 else
     echo "Smaller"
 fi
-----
+```
 
 ---
 
-== File Tests
+## File Tests
 
-[source,bash]
-----
+```bash
 if [ -f file.txt ]; then
     echo "File exists"
 fi
-----
+```
 
 Common tests:
-* `-f` file
-* `-d` directory
-* `-e` exists
-* `-x` executable
+- `-f` file
+- `-d` directory
+- `-e` exists
+- `-x` executable
 
 ---
 
-== Case Statement
+## Case Statement
 
-[source,bash]
-----
+```bash
 case $1 in
     start) echo "Starting";;
     stop)  echo "Stopping";;
     *)     echo "Unknown";;
 esac
-----
+```
 
 ---
 
-== Loops
+## Loops
 
-=== for Loop
+### for Loop
 
-[source,bash]
-----
+```bash
 for i in 1 2 3; do
     echo $i
 done
-----
+```
 
 ---
 
-=== while Loop
+### while Loop
 
-[source,bash]
-----
+```bash
 count=0
 while [ $count -lt 5 ]; do
     ((count++))
 done
-----
+```
 
 ---
 
-== Functions
+## Functions
 
-[source,bash]
-----
+```bash
 greet() {
     echo "Hello $1"
 }
 greet "World"
-----
+```
 
 ---
 
-== Arrays
+## Arrays
 
-[source,bash]
-----
+```bash
 arr=(one two three)
 echo ${arr[0]}
 echo ${arr[@]}
-----
+```
 
 ---
 
-== String Operations
+## String Operations
 
-[source,bash]
-----
+```bash
 str="hello world"
 echo ${#str}
 echo ${str^^}
-----
+```
 
 ---
 
-== Input / Output Redirection
+## Input / Output Redirection
 
-[source,bash]
-----
+```bash
 ls > out.txt
 ls >> out.txt
 ls 2> err.txt
-----
+```
 
 ---
 
-== Pipes
+## Pipes
 
-[source,bash]
-----
+```bash
 ps aux | grep root
-----
+```
 
 Pipes connect command outputs to inputs.
 
 ---
 
-== ADVANCED BASH CONCEPTS
+## ADVANCED BASH CONCEPTS
 
-== Quoting Rules
+## Quoting Rules
 
-=== Double Quotes
+### Double Quotes
 
-[source,bash]
-----
+```bash
 echo "$name"
-----
+```
 
 Expands variables.
 
 ---
 
-=== Single Quotes
+### Single Quotes
 
-[source,bash]
-----
+```bash
 echo '$name'
-----
+```
 
 Literal output.
 
 ---
 
-== Subshells
+## Subshells
 
-[source,bash]
-----
+```bash
 (cd /tmp && ls)
-----
+```
 
 Runs in a child shell.
 
 ---
 
-== Here Documents
+## Here Documents
 
-[source,bash]
-----
+```bash
 cat <<EOF
 Line 1
 Line 2
 EOF
-----
+```
 
 ---
 
-== Process Management
+## Process Management
 
-=== Background Jobs
+### Background Jobs
 
-[source,bash]
-----
+```bash
 sleep 10 &
 jobs
-----
+```
 
 ---
 
-=== wait
+### wait
 
-[source,bash]
-----
+```bash
 wait
-----
+```
 
 Waits for background processes.
 
 ---
 
-== Signal Handling
+## Signal Handling
 
-[source,bash]
-----
+```bash
 trap "echo Interrupted" SIGINT
-----
+```
 
 Handles Ctrl+C.
 
 ---
 
-== Environment Variables
+## Environment Variables
 
-[source,bash]
-----
+```bash
 export PATH=$PATH:/opt/bin
-----
+```
 
 Available to child processes.
 
 ---
 
-== Debugging Bash Scripts
+## Debugging Bash Scripts
 
-=== Enable Debug Mode
+### Enable Debug Mode
 
-[source,bash]
-----
+```bash
 set -x
-----
+```
 
 ---
 
-=== Exit on Error
+### Exit on Error
 
-[source,bash]
-----
+```bash
 set -e
-----
+```
 
 ---
 
-=== Treat Unset Variables as Error
+### Treat Unset Variables as Error
 
-[source,bash]
-----
+```bash
 set -u
-----
+```
 
 ---
 
-== Cron Jobs (Automation)
+## Cron Jobs (Automation)
 
-[source,bash]
-----
+```bash
 crontab -e
-----
+```
 
 Example:
-[source,bash]
-----
+```bash
 0 2 * * * /home/user/backup.sh
-----
+```
 
 ---
 
-== Bash vs Shell (`sh`)
+## Bash vs Shell (`sh`)
 
 | bash | sh |
 |----|----|
@@ -384,21 +350,20 @@ Example:
 
 ---
 
-== Common Utilities Used in Bash
+## Common Utilities Used in Bash
 
-* grep
-* awk
-* sed
-* cut
-* sort
-* xargs
+- grep
+- awk
+- sed
+- cut
+- sort
+- xargs
 
 ---
 
-== Example: Real Automation Script
+## Example: Real Automation Script
 
-[source,bash]
-----
+```bash
 #!/bin/bash
 
 LOG="/var/log/app.log"
@@ -409,32 +374,31 @@ if [ ! -f "$LOG" ]; then
 fi
 
 grep ERROR "$LOG" | tail -n 10
-----
+```
 
 ---
 
-== Performance and Best Practices
+## Performance and Best Practices
 
-* Quote variables
-* Use functions
-* Avoid unnecessary subshells
-* Prefer `[[ ]]` over `[ ]`
-* Check exit codes
-* Keep scripts readable
-
----
-
-== Common Interview Questions
-
-* Difference between `$@` and `$*`
-* `&&` vs `||`
-* How to debug bash script?
-* What is a subshell?
-* Difference between `source` and `./script.sh`
+- Quote variables
+- Use functions
+- Avoid unnecessary subshells
+- Prefer `[[ ]]` over `[ ]`
+- Check exit codes
+- Keep scripts readable
 
 ---
 
-== One-Line Takeaway
+## Common Interview Questions
+
+- Difference between `$@` and `$*`
+- `&&` vs `||`
+- How to debug bash script?
+- What is a subshell?
+- Difference between `source` and `./script.sh`
+
+---
+
+## One-Line Takeaway
 
 Bash scripting is a powerful tool for automating system tasks, orchestrating programs, and managing Linux environments efficiently.
-

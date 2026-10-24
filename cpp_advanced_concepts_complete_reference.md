@@ -1,61 +1,55 @@
-= Advanced C++ Concepts — Complete Practical Reference
-:toc:
-:toclevels: 4
-:sectnums:
-:source-highlighter: coderay
+# Advanced C++ Concepts — Complete Practical Reference
 
-== 1. Introduction
+## 1. Introduction
 
 Advanced C++ concepts focus on:
-* Runtime polymorphism
-* Object lifetime
-* Indirection and abstraction
-* Performance and memory layout
-* Correctness and safety
+- Runtime polymorphism
+- Object lifetime
+- Indirection and abstraction
+- Performance and memory layout
+- Correctness and safety
 
 These concepts are critical for:
-* System programming
-* Framework design
-* Low-latency applications
-* Interviews and code reviews
+- System programming
+- Framework design
+- Low-latency applications
+- Interviews and code reviews
 
 ---
 
-== 2. Virtual Functions
+## 2. Virtual Functions
 
-=== What is a Virtual Function?
+### What is a Virtual Function?
 
 A virtual function supports **runtime polymorphism**.
 
-[source,cpp]
-----
+```cpp
 class Base {
 public:
     virtual void foo() {
         std::cout << "Base";
     }
 };
-----
+```
 
 Call is resolved at **runtime**, not compile time.
 
 ---
 
-=== Why Virtual Functions Exist
+### Why Virtual Functions Exist
 
 They allow:
-* Interface-based programming
-* Behavior override
-* Substitution (Liskov principle)
+- Interface-based programming
+- Behavior override
+- Substitution (Liskov principle)
 
 ---
 
-== 3. Virtual Destructor (CRITICAL)
+## 3. Virtual Destructor (CRITICAL)
 
-=== Problem Without Virtual Destructor
+### Problem Without Virtual Destructor
 
-[source,cpp]
-----
+```cpp
 class Base {
 public:
     ~Base() {}
@@ -69,206 +63,194 @@ public:
 
 Base* b = new Derived();
 delete b;   // ❌ Derived destructor NOT called
-----
+```
 
 This causes **resource leaks**.
 
 ---
 
-=== Correct Solution
+### Correct Solution
 
-[source,cpp]
-----
+```cpp
 class Base {
 public:
     virtual ~Base() {}
 };
-----
+```
 
 Rule:
 > **If a class has ANY virtual function, its destructor should be virtual.**
 
 ---
 
-== 4. vtable (Virtual Table)
+## 4. vtable (Virtual Table)
 
-=== What is a vtable?
+### What is a vtable?
 
 A **vtable** is a compiler-generated table of function pointers used for dynamic dispatch.
 
 Each polymorphic object contains:
-* A hidden pointer (`vptr`) to its vtable
+- A hidden pointer (`vptr`) to its vtable
 
 ---
 
-=== How Virtual Call Works
+### How Virtual Call Works
 
-[source,text]
-----
+```text
 object -> vptr -> vtable -> function
-----
+```
 
 Call cost:
-* One extra indirection
-* Usually negligible
+- One extra indirection
+- Usually negligible
 
 ---
 
-=== Memory Layout (Conceptual)
+### Memory Layout (Conceptual)
 
-[source,text]
-----
+```text
 [ vptr ][ data members ]
-----
+```
 
 Each derived class has its own vtable.
 
 ---
 
-== 5. Override and Final
+## 5. Override and Final
 
-=== override
+### override
 
-[source,cpp]
-----
+```cpp
 class Derived : public Base {
 public:
     void foo() override;
 };
-----
+```
 
 Benefits:
-* Compile-time checking
-* Prevents signature mistakes
+- Compile-time checking
+- Prevents signature mistakes
 
 ---
 
-=== final
+### final
 
-[source,cpp]
-----
+```cpp
 class Derived final {};
-----
+```
 
 or
 
-[source,cpp]
-----
+```cpp
 void foo() final;
-----
+```
 
 Prevents further inheritance or override.
 
 ---
 
-== 6. Abstract Classes and Interfaces
+## 6. Abstract Classes and Interfaces
 
-=== Pure Virtual Function
+### Pure Virtual Function
 
-[source,cpp]
-----
+```cpp
 class Shape {
 public:
     virtual double area() const = 0;
 };
-----
+```
 
-* Cannot instantiate
-* Defines an interface
+- Cannot instantiate
+- Defines an interface
 
 ---
 
-== 7. Function Pointers
+## 7. Function Pointers
 
-=== What is a Function Pointer?
+### What is a Function Pointer?
 
 A variable that stores the address of a function.
 
-[source,cpp]
-----
+```cpp
 int add(int a, int b) { return a + b; }
 
 int (*fp)(int, int) = add;
 fp(2, 3);
-----
+```
 
 Used in:
-* C APIs
-* Callbacks
-* Legacy systems
+- C APIs
+- Callbacks
+- Legacy systems
 
 ---
 
-== 8. Functors (Function Objects)
+## 8. Functors (Function Objects)
 
-=== What is a Functor?
+### What is a Functor?
 
 An object that behaves like a function.
 
-[source,cpp]
-----
+```cpp
 struct Add {
     int operator()(int a, int b) const {
         return a + b;
     }
 };
-----
+```
 
 Usage:
-[source,cpp]
-----
+```cpp
 Add f;
 f(2, 3);
-----
+```
 
 Advantages over function pointers:
-* Can hold state
-* Inlineable
-* Type-safe
+- Can hold state
+- Inlineable
+- Type-safe
 
 ---
 
-== 9. Lambdas (Modern Functors)
+## 9. Lambdas (Modern Functors)
 
-[source,cpp]
-----
+```cpp
 auto add = [](int a, int b) {
     return a + b;
 };
-----
+```
 
 Lambdas are:
-* Compiler-generated functors
-* Lightweight
-* Preferred in modern C++
+- Compiler-generated functors
+- Lightweight
+- Preferred in modern C++
 
 ---
 
-== 10. std::function
+## 10. std::function
 
-=== What is std::function?
+### What is std::function?
 
 A **type-erased callable wrapper**.
 
-[source,cpp]
-----
+```cpp
 std::function<int(int,int)> f;
 f = add;
 f = Add{};
 f = [](int a,int b){ return a+b; };
-----
+```
 
 Pros:
-* Flexible
-* Uniform interface
+- Flexible
+- Uniform interface
 
 Cons:
-* Runtime overhead
-* Possible heap allocation
+- Runtime overhead
+- Possible heap allocation
 
 ---
 
-== 11. Function Pointer vs Functor vs std::function
+## 11. Function Pointer vs Functor vs std::function
 
 | Feature | Function Pointer | Functor | std::function |
 |------|-----------------|---------|---------------|
@@ -279,183 +261,172 @@ Cons:
 
 ---
 
-== 12. Type Erasure (Advanced)
+## 12. Type Erasure (Advanced)
 
 Type erasure hides concrete types behind a uniform interface.
 
-[source,cpp]
-----
+```cpp
 std::function<void()> f;
-----
+```
 
 Used in:
-* std::function
-* std::any
-* std::shared_ptr (custom deleter)
+- std::function
+- std::any
+- std::shared_ptr (custom deleter)
 
 ---
 
-== 13. Dynamic Casting
+## 13. Dynamic Casting
 
-[source,cpp]
-----
+```cpp
 Base* b = new Derived();
 Derived* d = dynamic_cast<Derived*>(b);
-----
+```
 
 Requirements:
-* Polymorphic base
-* Runtime check
+- Polymorphic base
+- Runtime check
 
 Cost:
-* RTTI lookup
+- RTTI lookup
 
 ---
 
-== 14. RTTI (Run-Time Type Information)
+## 14. RTTI (Run-Time Type Information)
 
 RTTI enables:
-* dynamic_cast
-* typeid
+- dynamic_cast
+- typeid
 
-[source,cpp]
-----
+```cpp
 typeid(*b).name();
-----
+```
 
 Avoid RTTI in hot paths.
 
 ---
 
-== 15. Multiple Inheritance
+## 15. Multiple Inheritance
 
-[source,cpp]
-----
+```cpp
 class A {};
 class B {};
 class C : public A, public B {};
-----
+```
 
 Problems:
-* Ambiguity
-* Diamond problem
+- Ambiguity
+- Diamond problem
 
 ---
 
-=== Virtual Inheritance
+### Virtual Inheritance
 
-[source,cpp]
-----
+```cpp
 class A {};
 class B : virtual public A {};
 class C : virtual public A {};
 class D : public B, public C {};
-----
+```
 
 Used to solve diamond problem.
 
 ---
 
-== 16. Object Slicing
+## 16. Object Slicing
 
-[source,cpp]
-----
+```cpp
 Derived d;
 Base b = d;   // slicing
-----
+```
 
 Derived part is lost.
 
 Avoid by:
-* Passing by reference or pointer
+- Passing by reference or pointer
 
 ---
 
-== 17. Inline Functions
+## 17. Inline Functions
 
-[source,cpp]
-----
+```cpp
 inline int add(int a, int b) {
     return a + b;
 }
-----
+```
 
 Hints compiler to inline.
 Modern compilers decide automatically.
 
 ---
 
-== 18. Undefined Behavior (Critical)
+## 18. Undefined Behavior (Critical)
 
 Examples:
-* Accessing out-of-bounds
-* Data races
-* Using deleted object
-* Violating strict aliasing
+- Accessing out-of-bounds
+- Data races
+- Using deleted object
+- Violating strict aliasing
 
 Undefined behavior = program is invalid.
 
 ---
 
-== 19. Strict Aliasing Rule
+## 19. Strict Aliasing Rule
 
-[source,cpp]
-----
+```cpp
 float f = 1.0f;
 int* p = (int*)&f;   // UB
-----
+```
 
 Use `memcpy` instead.
 
 ---
 
-== 20. Const-Correctness
+## 20. Const-Correctness
 
-[source,cpp]
-----
+```cpp
 void foo() const;
-----
+```
 
 Const correctness:
-* Improves safety
-* Enables optimizations
-* Improves API clarity
+- Improves safety
+- Enables optimizations
+- Improves API clarity
 
 ---
 
-== 21. noexcept
+## 21. noexcept
 
-[source,cpp]
-----
+```cpp
 void f() noexcept;
-----
+```
 
 Used for:
-* Move semantics
-* Optimization
-* Program correctness
+- Move semantics
+- Optimization
+- Program correctness
 
 ---
 
-== 22. Rule of Zero / Three / Five
+## 22. Rule of Zero / Three / Five
 
 Prefer:
-* Rule of Zero
-* RAII-based design
+- Rule of Zero
+- RAII-based design
 
 Avoid manual memory management.
 
 ---
 
-== 23. Empty Base Optimization (EBO)
+## 23. Empty Base Optimization (EBO)
 
-[source,cpp]
-----
+```cpp
 struct Empty {};
 struct Holder : Empty {
     int x;
 };
-----
+```
 
 Empty base occupies no space.
 
@@ -463,54 +434,52 @@ Used heavily in STL.
 
 ---
 
-== 24. Memory Alignment
+## 24. Memory Alignment
 
-[source,cpp]
-----
+```cpp
 alignas(64) int x;
-----
+```
 
 Used for:
-* Cache-line alignment
-* Performance tuning
+- Cache-line alignment
+- Performance tuning
 
 ---
 
-== 25. Low-Level Performance Notes
+## 25. Low-Level Performance Notes
 
-* Virtual calls are cheap but unpredictable
-* Branch misprediction costs more
-* Cache misses dominate cost
-* Prefer composition over inheritance
-* Measure, don’t guess
-
----
-
-== 26. Common Advanced Mistakes
-
-* Missing virtual destructor
-* Overusing inheritance
-* Using std::function in hot paths
-* Ignoring object slicing
-* Using RTTI unnecessarily
+- Virtual calls are cheap but unpredictable
+- Branch misprediction costs more
+- Cache misses dominate cost
+- Prefer composition over inheritance
+- Measure, don’t guess
 
 ---
 
-== 27. Interview-Grade Summary
+## 26. Common Advanced Mistakes
+
+- Missing virtual destructor
+- Overusing inheritance
+- Using std::function in hot paths
+- Ignoring object slicing
+- Using RTTI unnecessarily
+
+---
+
+## 27. Interview-Grade Summary
 
 Advanced C++ requires deep understanding of:
-* Object lifetime
-* Polymorphism internals
-* Abstraction costs
-* Language rules
-* Undefined behavior
+- Object lifetime
+- Polymorphism internals
+- Abstraction costs
+- Language rules
+- Undefined behavior
 
 Correctness comes before optimization.
 
 ---
 
-== 28. Final Takeaway
+## 28. Final Takeaway
 
 Advanced C++ is about **control with responsibility**.
 Understanding these concepts separates **users of C++** from **C++ engineers**.
-

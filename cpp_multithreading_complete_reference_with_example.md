@@ -1,35 +1,30 @@
-= C++ Multithreading — Complete Reference with Examples
-:toc:
-:toclevels: 4
-:sectnums:
-:source-highlighter: coderay
+# C++ Multithreading — Complete Reference with Examples
 
-== 1. Introduction
+## 1. Introduction
 
 Multithreading allows a program to execute **multiple tasks concurrently**.
 
 In C++ (C++11+), threading is part of the **standard library** and provides:
-* Portable threads
-* Synchronization primitives
-* Atomic operations
-* Memory visibility guarantees
+- Portable threads
+- Synchronization primitives
+- Atomic operations
+- Memory visibility guarantees
 
 Used in:
-* Servers
-* Trading systems
-* Parallel computation
-* I/O systems
+- Servers
+- Trading systems
+- Parallel computation
+- I/O systems
 
 ---
 
-== 2. Ways to Create Threads in C++
+## 2. Ways to Create Threads in C++
 
 ---
 
-=== 2.1 Using a Free Function
+### 2.1 Using a Free Function
 
-[source,cpp]
-----
+```cpp
 #include <thread>
 
 void task() {
@@ -40,28 +35,26 @@ int main() {
     std::thread t(task);
     t.join();
 }
-----
+```
 
 ---
 
-=== 2.2 Using a Lambda
+### 2.2 Using a Lambda
 
-[source,cpp]
-----
+```cpp
 std::thread t([]{
     std::cout << "Lambda thread\n";
 });
 t.join();
-----
+```
 
 Most commonly used in modern C++.
 
 ---
 
-=== 2.3 Using a Functor (Function Object)
+### 2.3 Using a Functor (Function Object)
 
-[source,cpp]
-----
+```cpp
 struct Worker {
     void operator()() {
         std::cout << "Functor thread\n";
@@ -70,14 +63,13 @@ struct Worker {
 
 std::thread t(Worker{});
 t.join();
-----
+```
 
 ---
 
-=== 2.4 Using a Member Function
+### 2.4 Using a Member Function
 
-[source,cpp]
-----
+```cpp
 class Job {
 public:
     void run() {
@@ -88,81 +80,76 @@ public:
 Job j;
 std::thread t(&Job::run, &j);
 t.join();
-----
+```
 
 ---
 
-=== 2.5 Passing Arguments to Threads
+### 2.5 Passing Arguments to Threads
 
-[source,cpp]
-----
+```cpp
 void print(int x) {
     std::cout << x << "\n";
 }
 
 std::thread t(print, 10);
 t.join();
-----
+```
 
 Pass by reference:
 
-[source,cpp]
-----
+```cpp
 std::thread t(print, std::ref(x));
-----
+```
 
 ---
 
-== 3. Thread Lifecycle
+## 3. Thread Lifecycle
 
-* Create → Running → Finished
-* Must call `join()` or `detach()`
+- Create → Running → Finished
+- Must call `join()` or `detach()`
 
-[source,cpp]
-----
+```cpp
 t.join();    // wait for thread
 t.detach();  // run independently
-----
+```
 
 Destroying a joinable thread calls `std::terminate`.
 
 ---
 
-== 4. What Is Thread Safety?
+## 4. What Is Thread Safety?
 
 Thread safety means:
 > Correct behavior when multiple threads access shared data concurrently.
 
 Problems arise due to:
-* Data races
-* Lost updates
-* Inconsistent state
+- Data races
+- Lost updates
+- Inconsistent state
 
 ---
 
-== 5. Data Race Example (Unsafe)
+## 5. Data Race Example (Unsafe)
 
-[source,cpp]
-----
+```cpp
 int counter = 0;
 
 void inc() {
     counter++;   // NOT thread-safe
 }
-----
+```
 
 Multiple threads incrementing `counter` cause undefined behavior.
 
 ---
 
-== 6. Making Code Thread-Safe
+## 6. Making Code Thread-Safe
 
 ---
 
-=== 6.1 Using Mutex
+### 6.1 Using Mutex
 
-[source,cpp]
-----
+```cpp
 #include <mutex>
 
 int counter = 0;
@@ -172,16 +159,15 @@ void inc() {
     std::lock_guard<std::mutex> lock(m);
     counter++;
 }
-----
+```
 
 Ensures mutual exclusion.
 
 ---
 
-=== 6.2 Using std::atomic
+### 6.2 Using std::atomic
 
-[source,cpp]
-----
+```cpp
 #include <atomic>
 
 std::atomic<int> counter{0};
@@ -189,22 +175,21 @@ std::atomic<int> counter{0};
 void inc() {
     counter++;
 }
-----
+```
 
 Lock-free, faster for simple operations.
 
 ---
 
-== 7. Famous Multithreading Problems
+## 7. Famous Multithreading Problems
 
 ---
 
-== 7.1 Odd–Even Printing (Classic Interview Problem)
+## 7.1 Odd–Even Printing (Classic Interview Problem)
 
 Print numbers in order using two threads.
 
-[source,cpp]
-----
+```cpp
 #include <thread>
 #include <mutex>
 #include <condition_variable>
@@ -242,21 +227,20 @@ int main() {
     t1.join();
     t2.join();
 }
-----
+```
 
 Concepts used:
-* Mutex
-* Condition variable
-* Signaling
+- Mutex
+- Condition variable
+- Signaling
 
 ---
 
-== 7.2 Producer–Consumer Problem
+## 7.2 Producer–Consumer Problem
 
 One thread produces data, another consumes it.
 
-[source,cpp]
-----
+```cpp
 #include <queue>
 #include <thread>
 #include <mutex>
@@ -294,30 +278,28 @@ int main() {
     p.join();
     c.join();
 }
-----
+```
 
 ---
 
-== 7.3 Thread-Safe Counter
+## 7.3 Thread-Safe Counter
 
-[source,cpp]
-----
+```cpp
 class Counter {
     std::atomic<int> value{0};
 public:
     void increment() { value++; }
     int get() const { return value.load(); }
 };
-----
+```
 
 ---
 
-== 7.4 Reader–Writer Problem (Simplified)
+## 7.4 Reader–Writer Problem (Simplified)
 
 Multiple readers, single writer.
 
-[source,cpp]
-----
+```cpp
 #include <shared_mutex>
 
 int data = 0;
@@ -332,16 +314,15 @@ void writer() {
     std::unique_lock lock(sm);
     data++;
 }
-----
+```
 
 ---
 
-== 7.5 Dining Philosophers (Simplified)
+## 7.5 Dining Philosophers (Simplified)
 
 Avoid deadlock by locking in order.
 
-[source,cpp]
-----
+```cpp
 std::mutex forks[5];
 
 void eat(int i) {
@@ -350,107 +331,103 @@ void eat(int i) {
     std::lock_guard<std::mutex> l2(forks[(i+1)%5], std::adopt_lock);
     std::cout << "Eating " << i << "\n";
 }
-----
+```
 
 ---
 
-== 8. Condition Variables
+## 8. Condition Variables
 
 Used for **thread coordination**, not mutual exclusion.
 
-[source,cpp]
-----
+```cpp
 cv.wait(lock, predicate);
 cv.notify_one();
 cv.notify_all();
-----
+```
 
 Always use with a predicate.
 
 ---
 
-== 9. Deadlock
+## 9. Deadlock
 
 Occurs when threads wait on each other forever.
 
-[source,cpp]
-----
+```cpp
 std::mutex m1, m2;
-----
+```
 
 Solution:
-* Lock ordering
-* std::lock
-* Avoid nested locks
+- Lock ordering
+- std::lock
+- Avoid nested locks
 
 ---
 
-== 10. Thread Pool (Basic Idea)
+## 10. Thread Pool (Basic Idea)
 
 Reuse threads instead of creating repeatedly.
 
-[source,cpp]
-----
+```cpp
 class ThreadPool {
     std::vector<std::thread> workers;
 };
-----
+```
 
 Used in:
-* Servers
-* Task schedulers
+- Servers
+- Task schedulers
 
 ---
 
-== 11. Thread Safety Rules (Golden Rules)
+## 11. Thread Safety Rules (Golden Rules)
 
-* Minimize shared state
-* Prefer immutability
-* Use RAII locks
-* Prefer std::atomic when possible
-* Avoid holding locks long
-* Always join threads
-
----
-
-== 12. Common Threading Mistakes
-
-* Forgetting join/detach
-* Data races
-* Deadlocks
-* Overusing mutexes
-* Using std::function in hot paths
-* Ignoring false sharing
+- Minimize shared state
+- Prefer immutability
+- Use RAII locks
+- Prefer std::atomic when possible
+- Avoid holding locks long
+- Always join threads
 
 ---
 
-== 13. Performance Considerations
+## 12. Common Threading Mistakes
 
-* Threads are expensive
-* Context switching is costly
-* Cache contention hurts performance
-* Lock-free is not always faster
-
----
-
-== 14. Interview-Famous Threading Questions
-
-* Odd–Even printing
-* Producer–Consumer
-* Thread-safe singleton
-* Deadlock scenarios
-* Atomic vs mutex
+- Forgetting join/detach
+- Data races
+- Deadlocks
+- Overusing mutexes
+- Using std::function in hot paths
+- Ignoring false sharing
 
 ---
 
-== 15. Final Takeaway
+## 13. Performance Considerations
+
+- Threads are expensive
+- Context switching is costly
+- Cache contention hurts performance
+- Lock-free is not always faster
+
+---
+
+## 14. Interview-Famous Threading Questions
+
+- Odd–Even printing
+- Producer–Consumer
+- Thread-safe singleton
+- Deadlock scenarios
+- Atomic vs mutex
+
+---
+
+## 15. Final Takeaway
 
 C++ multithreading provides powerful tools, but correctness is more important than speed.
 
 Correct multithreaded code requires:
-* Discipline
-* Understanding of synchronization
-* Careful design
+- Discipline
+- Understanding of synchronization
+- Careful design
 
 This document is a **complete practical reference**.
-

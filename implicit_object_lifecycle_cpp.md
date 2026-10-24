@@ -1,35 +1,31 @@
-= Implicit Object Behavior and Lifetime Management in C++
-:toc:
-:toclevels: 4
-:sectnums:
-:source-highlighter: coderay
+# Implicit Object Behavior and Lifetime Management in C++
 
-== Introduction
+## Introduction
 
-In C++, many operations related to object creation, copying, moving, and destruction happen *implicitly*.
+In C++, many operations related to object creation, copying, moving, and destruction happen **implicitly**.
 This means the compiler automatically generates and invokes functions even if the programmer does not explicitly write them.
 
 Understanding this implicit behavior is critical for:
-* Resource management
-* Exception safety
-* Correct object design
-* Interview success (especially system-level C++ roles)
+- Resource management
+- Exception safety
+- Correct object design
+- Interview success (especially system-level C++ roles)
 
 ---
 
-== What Does "Implicit" Mean in C++?
+## What Does "Implicit" Mean in C++?
 
 Implicit behavior means:
 
-* The compiler generates code on your behalf
-* Certain functions exist even if you never write them
-* These functions are automatically called at specific points in an object’s lifetime
+- The compiler generates code on your behalf
+- Certain functions exist even if you never write them
+- These functions are automatically called at specific points in an object’s lifetime
 
 This implicit behavior is governed by strict language rules and is deterministic.
 
 ---
 
-== Special Member Functions (Implicitly Generated)
+## Special Member Functions (Implicitly Generated)
 
 C++ defines **six special member functions**.
 If not explicitly declared, the compiler may generate them automatically.
@@ -45,39 +41,37 @@ These functions control the full lifecycle of an object.
 
 ---
 
-== Example Class Used Throughout
+## Example Class Used Throughout
 
-[source,cpp]
-----
+```cpp
 class File {
     std::ofstream f;
 public:
     File() : f("data.txt") {}
 };
-----
+```
 
 This class opens a file during construction but does not explicitly close it.
 
 ---
 
-== Implicit Destructor
+## Implicit Destructor
 
 Although no destructor is written, the compiler generates one:
 
-[source,cpp]
-----
+```cpp
 File::~File() {
     // empty body
 }
-----
+```
 
 Important:
-* Even an empty destructor still triggers destruction of members
-* Member destruction happens automatically after the destructor body
+- Even an empty destructor still triggers destruction of members
+- Member destruction happens automatically after the destructor body
 
 ---
 
-== Member Destruction Rule (Critical Rule)
+## Member Destruction Rule (Critical Rule)
 
 C++ guarantees:
 
@@ -87,18 +81,17 @@ This is non-optional and enforced by the language.
 
 Destruction order:
 1. Destructor body executes
-2. Members are destroyed in *reverse order of declaration*
+2. Members are destroyed in **reverse order of declaration**
 
 ---
 
-== Where the File Is Actually Closed
+## Where the File Is Actually Closed
 
 In the example:
 
-[source,cpp]
-----
+```cpp
 std::ofstream f;
-----
+```
 
 When `File` is destroyed:
 1. `File::~File()` runs
@@ -111,143 +104,134 @@ This pattern is known as **RAII (Resource Acquisition Is Initialization)**.
 
 ---
 
-== Object Lifetime and Scope
+## Object Lifetime and Scope
 
-=== Automatic Storage Duration (Stack Objects)
+### Automatic Storage Duration (Stack Objects)
 
-[source,cpp]
-----
+```cpp
 void foo() {
     File f;
 } // f goes out of scope here
-----
+```
 
 At scope exit:
-* Destructor is called automatically
-* File is closed
-* No leaks are possible
+- Destructor is called automatically
+- File is closed
+- No leaks are possible
 
 ---
 
-=== Dynamic Storage Duration (Heap Objects)
+### Dynamic Storage Duration (Heap Objects)
 
-[source,cpp]
-----
+```cpp
 File* f = new File();
 // ...
 delete f;
-----
+```
 
 Important:
-* `delete` explicitly triggers destruction
-* Forgetting `delete` prevents destructor execution
+- `delete` explicitly triggers destruction
+- Forgetting `delete` prevents destructor execution
 
 ---
 
-== Exception Safety and Implicit Destruction
+## Exception Safety and Implicit Destruction
 
-[source,cpp]
-----
+```cpp
 void foo() {
     File f;
     throw std::runtime_error("error");
 }
-----
+```
 
 Despite the exception:
-* Stack unwinding occurs
-* `File::~File()` is still called
-* File is safely closed
+- Stack unwinding occurs
+- `File::~File()` is still called
+- File is safely closed
 
 This is a fundamental guarantee of C++.
 
 ---
 
-== Implicit Copy Constructor
+## Implicit Copy Constructor
 
 If allowed, the compiler would generate:
 
-[source,cpp]
-----
+```cpp
 File::File(const File& other) : f(other.f) {}
-----
+```
 
 However:
-* `std::ofstream` is NOT copyable
-* Therefore, the compiler **deletes** the copy constructor
+- `std::ofstream` is NOT copyable
+- Therefore, the compiler **deletes** the copy constructor
 
 Result:
 
-[source,cpp]
-----
+```cpp
 File a;
 File b = a; // compile-time error
-----
+```
 
 This prevents double-close and undefined behavior.
 
 ---
 
-== Implicit Move Constructor
+## Implicit Move Constructor
 
 Since `std::ofstream` is movable, the compiler generates:
 
-[source,cpp]
-----
+```cpp
 File::File(File&& other) : f(std::move(other.f)) {}
-----
+```
 
 Behavior:
-* Ownership of file handle is transferred
-* Moved-from object no longer owns the file
-* Safe and intentional design
+- Ownership of file handle is transferred
+- Moved-from object no longer owns the file
+- Safe and intentional design
 
 ---
 
-== Implicit Copy Assignment Operator
+## Implicit Copy Assignment Operator
 
 Copy assignment follows the same rule as copy construction.
 
 Because `std::ofstream` is non-copyable:
-* Copy assignment is implicitly deleted
+- Copy assignment is implicitly deleted
 
-[source,cpp]
-----
+```cpp
 File a, b;
 b = a; // compile-time error
-----
+```
 
 ---
 
-== Implicit Move Assignment Operator
+## Implicit Move Assignment Operator
 
 Move assignment is generated:
 
-[source,cpp]
-----
+```cpp
 File& operator=(File&& other);
-----
+```
 
 This allows safe reassignment of ownership.
 
 ---
 
-== Implicit Default Constructor
+## Implicit Default Constructor
 
-If *no* constructor is defined, the compiler generates a default constructor.
+If **no** constructor is defined, the compiler generates a default constructor.
 
 In this example:
-[source,cpp]
-----
+```cpp
 File() : f("data.txt") {}
-----
+```
 
 Because a constructor is explicitly defined:
-* No implicit default constructor is generated
+- No implicit default constructor is generated
 
 ---
 
-== Summary Table of Implicit Behavior
+## Summary Table of Implicit Behavior
 
 | Feature | Implicitly Generated |
 |------|----------------------|
@@ -261,75 +245,73 @@ Because a constructor is explicitly defined:
 
 ---
 
-== Rule of 0, Rule of 3, Rule of 5
+## Rule of 0, Rule of 3, Rule of 5
 
-=== Rule of 0
+### Rule of 0
 
 If a class uses RAII types:
-* Do not write destructor
-* Do not write copy/move logic
+- Do not write destructor
+- Do not write copy/move logic
 
-[source,cpp]
-----
+```cpp
 class Safe {
     std::unique_ptr<int> p;
 };
-----
+```
 
 Preferred modern C++ style.
 
 ---
 
-=== Rule of 3
+### Rule of 3
 
 If a class manages a resource manually, define:
-* Destructor
-* Copy constructor
-* Copy assignment
+- Destructor
+- Copy constructor
+- Copy assignment
 
 ---
 
-=== Rule of 5
+### Rule of 5
 
 Add:
-* Move constructor
-* Move assignment
+- Move constructor
+- Move assignment
 
 ---
 
-== Why Implicit Behavior Is Powerful
+## Why Implicit Behavior Is Powerful
 
 Implicit object behavior enables:
-* Deterministic cleanup
-* Exception safety
-* Zero-cost abstractions
-* Cleaner code
-* Fewer bugs
+- Deterministic cleanup
+- Exception safety
+- Zero-cost abstractions
+- Cleaner code
+- Fewer bugs
 
 Manual cleanup is error-prone and discouraged.
 
 ---
 
-== Common Mistakes
+## Common Mistakes
 
-* Assuming destructors are optional
-* Forgetting delete on heap objects
-* Writing unnecessary destructors
-* Copying non-copyable resources
-* Ignoring move semantics
+- Assuming destructors are optional
+- Forgetting delete on heap objects
+- Writing unnecessary destructors
+- Copying non-copyable resources
+- Ignoring move semantics
 
 ---
 
-== Interview-Grade Explanation
+## Interview-Grade Explanation
 
-> In C++, even if we don’t write destructors or copy logic, the compiler generates them based on strict rules.  
-> When an object goes out of scope, its destructor runs, and all members are destroyed automatically.  
-> Since `std::ofstream` closes the file in its destructor, the file is closed implicitly.  
+> In C++, even if we don’t write destructors or copy logic, the compiler generates them based on strict rules.
+> When an object goes out of scope, its destructor runs, and all members are destroyed automatically.
+> Since `std::ofstream` closes the file in its destructor, the file is closed implicitly.
 > This behavior is deterministic, exception-safe, and is the foundation of RAII.
 
 ---
 
-== One-Line Takeaway
+## One-Line Takeaway
 
 Implicit object behavior in C++ means the compiler automatically manages object construction, destruction, and resource cleanup according to strict lifetime rules — even when the programmer writes no explicit code.
-

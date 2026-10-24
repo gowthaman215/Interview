@@ -1,242 +1,221 @@
-= C++ Programming — Complete Reference (Basic, Core, Advanced)
-:toc:
-:toclevels: 4
-:sectnums:
-:source-highlighter: coderay
+# C++ Programming — Complete Reference (Basic, Core, Advanced)
 
-== Introduction
+## Introduction
 
 C++ is a high-performance, general-purpose programming language supporting:
-* Procedural programming
-* Object-Oriented Programming
-* Generic programming
-* Low-level system access
+- Procedural programming
+- Object-Oriented Programming
+- Generic programming
+- Low-level system access
 
 C++ is widely used in:
-* Trading systems
-* Databases
-* Operating systems
-* Game engines
-* High-performance servers
+- Trading systems
+- Databases
+- Operating systems
+- Game engines
+- High-performance servers
 
 ---
 
-== BASIC C++ CONCEPTS
+## BASIC C++ CONCEPTS
 
-== Program Structure
+## Program Structure
 
-[source,cpp]
-----
+```cpp
 #include <iostream>
 
 int main() {
     std::cout << "Hello C++";
     return 0;
 }
-----
+```
 
 Execution starts from `main()`.
 
 ---
 
-== Variables and Data Types
+## Variables and Data Types
 
-[source,cpp]
-----
+```cpp
 int a = 10;
 double b = 3.14;
 char c = 'x';
 bool flag = true;
-----
+```
 
 C++ is statically typed.
 
 ---
 
-== Constants
+## Constants
 
-[source,cpp]
-----
+```cpp
 const int x = 10;
 constexpr int y = 20;
-----
+```
 
-* `const` → read-only
-* `constexpr` → compile-time constant
+- `const` → read-only
+- `constexpr` → compile-time constant
 
 ---
 
-== Operators
+## Operators
 
-=== Arithmetic
+### Arithmetic
 
-[source,cpp]
-----
+```cpp
 int a = 10 + 5;
 int b = 10 / 3;
 int c = 10 % 3;
-----
+```
 
 ---
 
-=== Comparison and Logical
+### Comparison and Logical
 
-[source,cpp]
-----
+```cpp
 if (a > b && c != 0) {}
-----
+```
 
 ---
 
-== Control Flow
+## Control Flow
 
-=== if / else
+### if / else
 
-[source,cpp]
-----
+```cpp
 if (x > 0) {
     std::cout << "Positive";
 } else {
     std::cout << "Negative";
 }
-----
+```
 
 ---
 
-=== for Loop
+### for Loop
 
-[source,cpp]
-----
+```cpp
 for (int i = 0; i < 5; ++i) {
     std::cout << i;
 }
-----
+```
 
 ---
 
-=== while Loop
+### while Loop
 
-[source,cpp]
-----
+```cpp
 while (x > 0) {
     x--;
 }
-----
+```
 
 ---
 
-== Functions
+## Functions
 
-[source,cpp]
-----
+```cpp
 int add(int a, int b) {
     return a + b;
 }
-----
+```
 
 ---
 
-== CORE C++ CONCEPTS
+## CORE C++ CONCEPTS
 
-== Pointers and References
+## Pointers and References
 
-[source,cpp]
-----
+```cpp
 int x = 10;
 int* p = &x;
 int& r = x;
-----
+```
 
 Pointers store addresses; references are aliases.
 
 ---
 
-== Memory Management
+## Memory Management
 
-=== Stack vs Heap
+### Stack vs Heap
 
-[source,cpp]
-----
+```cpp
 int a = 10;          // stack
 int* p = new int(5); // heap
 delete p;
-----
+```
 
 ---
 
-== RAII (Resource Acquisition Is Initialization)
+## RAII (Resource Acquisition Is Initialization)
 
-[source,cpp]
-----
+```cpp
 #include <fstream>
 
 void write() {
     std::ofstream f("data.txt");
     f << "Hello";
 } // file closed automatically
-----
+```
 
 RAII ensures deterministic cleanup.
 
 ---
 
-== Object-Oriented Programming
+## Object-Oriented Programming
 
-== Classes and Objects
+## Classes and Objects
 
-[source,cpp]
-----
+```cpp
 class Car {
 public:
     void drive() {
         std::cout << "Driving";
     }
 };
-----
+```
 
 ---
 
-== Constructors and Destructors
+## Constructors and Destructors
 
-[source,cpp]
-----
+```cpp
 class A {
 public:
     A() { }
     ~A() { }
 };
-----
+```
 
 ---
 
-== Encapsulation
+## Encapsulation
 
-[source,cpp]
-----
+```cpp
 class Account {
 private:
     int balance;
 public:
     int getBalance() const { return balance; }
 };
-----
+```
 
 ---
 
-== Inheritance
+## Inheritance
 
-[source,cpp]
-----
+```cpp
 class Base {};
 class Derived : public Base {};
-----
+```
 
 ---
 
-== Polymorphism
+## Polymorphism
 
-[source,cpp]
-----
+```cpp
 class Base {
 public:
     virtual void show() {}
@@ -246,168 +225,156 @@ class Derived : public Base {
 public:
     void show() override {}
 };
-----
+```
 
 ---
 
-== Rule of 0 / 3 / 5
+## Rule of 0 / 3 / 5
 
-* Rule of 0: Use RAII, no custom destructor
-* Rule of 3: Destructor, copy ctor, copy assign
-* Rule of 5: + move ctor, move assign
+- Rule of 0: Use RAII, no custom destructor
+- Rule of 3: Destructor, copy ctor, copy assign
+- Rule of 5: + move ctor, move assign
 
 ---
 
-== Templates
+## Templates
 
-[source,cpp]
-----
+```cpp
 template<typename T>
 T add(T a, T b) {
     return a + b;
 }
-----
+```
 
 ---
 
-== Exception Handling
+## Exception Handling
 
-[source,cpp]
-----
+```cpp
 try {
     throw std::runtime_error("error");
 } catch (const std::exception& e) {
     std::cout << e.what();
 }
-----
+```
 
 ---
 
-== STL (Standard Template Library)
+## STL (Standard Template Library)
 
-== Containers
+## Containers
 
-[source,cpp]
-----
+```cpp
 std::vector<int> v = {1,2,3};
 std::map<int,int> m;
-----
+```
 
 ---
 
-== Algorithms
+## Algorithms
 
-[source,cpp]
-----
+```cpp
 std::sort(v.begin(), v.end());
-----
+```
 
 ---
 
-== Iterators
+## Iterators
 
-[source,cpp]
-----
+```cpp
 for (auto it = v.begin(); it != v.end(); ++it) {}
-----
+```
 
 ---
 
-== ADVANCED C++ CONCEPTS
+## ADVANCED C++ CONCEPTS
 
-== Move Semantics
+## Move Semantics
 
-[source,cpp]
-----
+```cpp
 std::vector<int> v2 = std::move(v1);
-----
+```
 
 Moves resources instead of copying.
 
 ---
 
-== Smart Pointers
+## Smart Pointers
 
-[source,cpp]
-----
+```cpp
 #include <memory>
 
 std::unique_ptr<int> u = std::make_unique<int>(10);
 std::shared_ptr<int> s = std::make_shared<int>(20);
-----
+```
 
 ---
 
-== Lambda Expressions
+## Lambda Expressions
 
-[source,cpp]
-----
+```cpp
 auto f = [](int x) { return x * x; };
-----
+```
 
 ---
 
-== Multithreading
+## Multithreading
 
-[source,cpp]
-----
+```cpp
 #include <thread>
 
 void task() {}
 
 std::thread t(task);
 t.join();
-----
+```
 
 ---
 
-== Mutex and Synchronization
+## Mutex and Synchronization
 
-[source,cpp]
-----
+```cpp
 #include <mutex>
 
 std::mutex m;
 std::lock_guard<std::mutex> lock(m);
-----
+```
 
 ---
 
-== Atomic Operations
+## Atomic Operations
 
-[source,cpp]
-----
+```cpp
 #include <atomic>
 
 std::atomic<int> counter{0};
 counter++;
-----
+```
 
 ---
 
-== Memory Model and Visibility
+## Memory Model and Visibility
 
 Synchronization ensures:
-* Happens-before relationships
-* Visibility across threads
+- Happens-before relationships
+- Visibility across threads
 
 ---
 
-== Low-Latency Programming Concepts
+## Low-Latency Programming Concepts
 
-* Avoid heap allocations in hot paths
-* Avoid locks where possible
-* Prefer cache-friendly data
-* Use fixed-size containers
+- Avoid heap allocations in hot paths
+- Avoid locks where possible
+- Prefer cache-friendly data
+- Use fixed-size containers
 
 ---
 
-== Design Patterns (Common)
+## Design Patterns (Common)
 
-=== Singleton
+### Singleton
 
-[source,cpp]
-----
+```cpp
 class Singleton {
 public:
     static Singleton& instance() {
@@ -415,20 +382,19 @@ public:
         return s;
     }
 };
-----
+```
 
 ---
 
-=== Factory (Concept)
+### Factory (Concept)
 
-[source,text]
-----
+```text
 Create objects without exposing creation logic
-----
+```
 
 ---
 
-== C++ vs Python (Quick View)
+## C++ vs Python (Quick View)
 
 | C++ | Python |
 |----|-------|
@@ -439,29 +405,28 @@ Create objects without exposing creation logic
 
 ---
 
-== Common Interview Questions
+## Common Interview Questions
 
-* Difference between `const` and `constexpr`?
-* Why virtual destructor?
-* vector vs list?
-* map vs unordered_map?
-* What is RAII?
-* What happens if std::thread not joined?
-
----
-
-== Best Practices
-
-* Prefer modern C++
-* Use RAII everywhere
-* Avoid raw pointers
-* Prefer STL algorithms
-* Measure before optimizing
-* Write readable code
+- Difference between `const` and `constexpr`?
+- Why virtual destructor?
+- vector vs list?
+- map vs unordered_map?
+- What is RAII?
+- What happens if std::thread not joined?
 
 ---
 
-== One-Line Takeaway
+## Best Practices
+
+- Prefer modern C++
+- Use RAII everywhere
+- Avoid raw pointers
+- Prefer STL algorithms
+- Measure before optimizing
+- Write readable code
+
+---
+
+## One-Line Takeaway
 
 C++ provides fine-grained control over performance and resources, making it ideal for building safe, efficient, and scalable systems when used with modern best practices.
-

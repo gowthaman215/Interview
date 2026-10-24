@@ -1,42 +1,37 @@
-= Design Patterns in C++ — Complete Reference with Examples
-:toc:
-:toclevels: 4
-:sectnums:
-:source-highlighter: coderay
+# Design Patterns in C++ — Complete Reference with Examples
 
-== 1. Introduction
+## 1. Introduction
 
 Design Patterns are **reusable solutions to recurring design problems**.
 
 They help:
-* Reduce coupling
-* Improve maintainability
-* Improve extensibility
-* Communicate design intent
+- Reduce coupling
+- Improve maintainability
+- Improve extensibility
+- Communicate design intent
 
 Patterns are NOT code templates — they are **design ideas**.
 
 ---
 
-== 2. Categories of Design Patterns
+## 2. Categories of Design Patterns
 
 Design patterns are grouped into:
 
-* Creational Patterns
-* Structural Patterns
-* Behavioral Patterns
+- Creational Patterns
+- Structural Patterns
+- Behavioral Patterns
 
 ---
 
-= PART I — CREATIONAL PATTERNS
+# PART I — CREATIONAL PATTERNS
 
-== 3. Singleton
+## 3. Singleton
 
-=== Intent
+### Intent
 Ensure a class has only one instance.
 
-[source,cpp]
-----
+```cpp
 class Singleton {
 private:
     Singleton() {}
@@ -46,21 +41,20 @@ public:
         return s;
     }
 };
-----
+```
 
 Notes:
-* Thread-safe since C++11
-* Avoid overuse
+- Thread-safe since C++11
+- Avoid overuse
 
 ---
 
-== 4. Factory Method
+## 4. Factory Method
 
-=== Intent
+### Intent
 Create objects without specifying exact class.
 
-[source,cpp]
-----
+```cpp
 class Shape {
 public:
     virtual void draw() = 0;
@@ -77,17 +71,16 @@ public:
         return std::make_unique<Circle>();
     }
 };
-----
+```
 
 ---
 
-== 5. Abstract Factory
+## 5. Abstract Factory
 
-=== Intent
+### Intent
 Create families of related objects.
 
-[source,cpp]
-----
+```cpp
 class Button {};
 class WinButton : public Button {};
 class MacButton : public Button {};
@@ -96,17 +89,16 @@ class GUIFactory {
 public:
     virtual std::unique_ptr<Button> createButton() = 0;
 };
-----
+```
 
 ---
 
-== 6. Builder
+## 6. Builder
 
-=== Intent
+### Intent
 Construct complex objects step-by-step.
 
-[source,cpp]
-----
+```cpp
 class Car {
 public:
     std::string engine, wheels;
@@ -120,48 +112,45 @@ public:
     }
     Car build() { return car; }
 };
-----
+```
 
 ---
 
-== 7. Prototype
+## 7. Prototype
 
-=== Intent
+### Intent
 Clone existing objects.
 
-[source,cpp]
-----
+```cpp
 class Prototype {
 public:
     virtual Prototype* clone() const = 0;
 };
-----
+```
 
 ---
 
-== 8. Object Pool
+## 8. Object Pool
 
-=== Intent
+### Intent
 Reuse expensive objects.
 
-[source,cpp]
-----
+```cpp
 class Pool {
     std::vector<int> objects;
 };
-----
+```
 
 ---
 
-= PART II — STRUCTURAL PATTERNS
+# PART II — STRUCTURAL PATTERNS
 
-== 9. Adapter
+## 9. Adapter
 
-=== Intent
+### Intent
 Convert one interface into another.
 
-[source,cpp]
-----
+```cpp
 class OldAPI {
 public:
     void oldCall() {}
@@ -172,17 +161,16 @@ class Adapter {
 public:
     void newCall() { api.oldCall(); }
 };
-----
+```
 
 ---
 
-== 10. Bridge
+## 10. Bridge
 
-=== Intent
+### Intent
 Separate abstraction from implementation.
 
-[source,cpp]
-----
+```cpp
 class Renderer {
 public:
     virtual void render() = 0;
@@ -192,32 +180,30 @@ class Shape {
 protected:
     Renderer* r;
 };
-----
+```
 
 ---
 
-== 11. Composite
+## 11. Composite
 
-=== Intent
+### Intent
 Treat individual objects and compositions uniformly.
 
-[source,cpp]
-----
+```cpp
 class Component {
 public:
     virtual void operation() = 0;
 };
-----
+```
 
 ---
 
-== 12. Decorator
+## 12. Decorator
 
-=== Intent
+### Intent
 Add behavior dynamically.
 
-[source,cpp]
-----
+```cpp
 class Coffee {
 public:
     virtual int cost() = 0;
@@ -226,122 +212,114 @@ public:
 class Milk : public Coffee {
     Coffee* c;
 };
-----
+```
 
 ---
 
-== 13. Facade
+## 13. Facade
 
-=== Intent
+### Intent
 Provide simplified interface.
 
-[source,cpp]
-----
+```cpp
 class Facade {
 public:
     void simpleCall() {}
 };
-----
+```
 
 ---
 
-== 14. Flyweight
+## 14. Flyweight
 
-=== Intent
+### Intent
 Share common state.
 
-[source,cpp]
-----
+```cpp
 class Flyweight {
     int shared;
 };
-----
+```
 
 ---
 
-== 15. Proxy
+## 15. Proxy
 
-=== Intent
+### Intent
 Control access to an object.
 
-[source,cpp]
-----
+```cpp
 class Proxy {
     RealObject obj;
 };
-----
+```
 
 ---
 
-= PART III — BEHAVIORAL PATTERNS
+# PART III — BEHAVIORAL PATTERNS
 
-== 16. Strategy
+## 16. Strategy
 
-=== Intent
+### Intent
 Encapsulate interchangeable algorithms.
 
-[source,cpp]
-----
+```cpp
 class Strategy {
 public:
     virtual void execute() = 0;
 };
-----
+```
 
 ---
 
-== 17. Observer
+## 17. Observer
 
-=== Intent
+### Intent
 Notify dependents automatically.
 
-[source,cpp]
-----
+```cpp
 class Observer {
 public:
     virtual void update() = 0;
 };
-----
+```
 
 ---
 
-== 18. Command
+## 18. Command
 
-=== Intent
+### Intent
 Encapsulate request as object.
 
-[source,cpp]
-----
+```cpp
 class Command {
 public:
     virtual void execute() = 0;
 };
-----
+```
 
 ---
 
-== 19. State
+## 19. State
 
-=== Intent
+### Intent
 Change behavior when state changes.
 
-[source,cpp]
-----
+```cpp
 class State {
 public:
     virtual void handle() = 0;
 };
-----
+```
 
 ---
 
-== 20. Template Method
+## 20. Template Method
 
-=== Intent
+### Intent
 Define algorithm skeleton.
 
-[source,cpp]
-----
+```cpp
 class Base {
 public:
     void run() {
@@ -351,136 +329,128 @@ public:
     virtual void step1() = 0;
     virtual void step2() = 0;
 };
-----
+```
 
 ---
 
-== 21. Iterator
+## 21. Iterator
 
-=== Intent
+### Intent
 Access elements sequentially.
 
-[source,cpp]
-----
+```cpp
 auto it = container.begin();
-----
+```
 
 ---
 
-== 22. Mediator
+## 22. Mediator
 
-=== Intent
+### Intent
 Reduce object coupling.
 
-[source,cpp]
-----
+```cpp
 class Mediator {
 public:
     virtual void notify() = 0;
 };
-----
+```
 
 ---
 
-== 23. Memento
+## 23. Memento
 
-=== Intent
+### Intent
 Capture object state.
 
-[source,cpp]
-----
+```cpp
 class Memento {
     int state;
 };
-----
+```
 
 ---
 
-== 24. Chain of Responsibility
+## 24. Chain of Responsibility
 
-=== Intent
+### Intent
 Pass request along chain.
 
-[source,cpp]
-----
+```cpp
 class Handler {
 protected:
     Handler* next;
 };
-----
+```
 
 ---
 
-== 25. Visitor
+## 25. Visitor
 
-=== Intent
+### Intent
 Add operations without modifying classes.
 
-[source,cpp]
-----
+```cpp
 class Visitor {
 public:
     virtual void visit() = 0;
 };
-----
+```
 
 ---
 
-== 26. Interpreter
+## 26. Interpreter
 
-=== Intent
+### Intent
 Define grammar.
 
-[source,cpp]
-----
+```cpp
 class Expression {
 public:
     virtual int interpret() = 0;
 };
-----
+```
 
 ---
 
-== 27. Null Object
+## 27. Null Object
 
-=== Intent
+### Intent
 Avoid null checks.
 
-[source,cpp]
-----
+```cpp
 class NullLogger {
 public:
     void log() {}
 };
-----
+```
 
 ---
 
-== 28. Dependency Injection (Modern Pattern)
+## 28. Dependency Injection (Modern Pattern)
 
-=== Intent
+### Intent
 Provide dependencies externally.
 
-[source,cpp]
-----
+```cpp
 class Service {
 public:
     Service(Dependency& d) {}
 };
-----
+```
 
 ---
 
-== 29. Anti-Patterns (Important)
+## 29. Anti-Patterns (Important)
 
-* God Object
-* Spaghetti Code
-* Overuse of Singleton
-* Tight coupling
+- God Object
+- Spaghetti Code
+- Overuse of Singleton
+- Tight coupling
 
 ---
 
-== 30. Choosing the Right Pattern
+## 30. Choosing the Right Pattern
 
 | Problem | Pattern |
 |------|--------|
@@ -492,12 +462,11 @@ public:
 
 ---
 
-== 31. Final Takeaway
+## 31. Final Takeaway
 
 Design patterns:
-* Improve code quality
-* Are tools, not rules
-* Must be used judiciously
+- Improve code quality
+- Are tools, not rules
+- Must be used judiciously
 
 Good design is about **clarity and balance**, not patterns everywhere.
-

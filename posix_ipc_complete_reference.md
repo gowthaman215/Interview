@@ -1,24 +1,20 @@
-= POSIX IPC (Inter-Process Communication) — Complete Reference with Examples
-:toc:
-:toclevels: 4
-:sectnums:
-:source-highlighter: coderay
+# POSIX IPC (Inter-Process Communication) — Complete Reference with Examples
 
-== Introduction
+## Introduction
 
 POSIX IPC (Inter-Process Communication) provides standardized mechanisms for
 processes to communicate and synchronize with each other on UNIX-like systems.
 
 POSIX IPC is primarily used for:
-* Local process communication
-* High-performance shared data exchange
-* Synchronization between processes
+- Local process communication
+- High-performance shared data exchange
+- Synchronization between processes
 
 It is fundamentally different from socket-based networking.
 
 ---
 
-== Categories of POSIX IPC
+## Categories of POSIX IPC
 
 POSIX IPC consists of three main mechanisms:
 
@@ -30,20 +26,20 @@ These are defined in POSIX.1b and POSIX.1c standards.
 
 ---
 
-== POSIX Shared Memory
+## POSIX Shared Memory
 
-=== What Is Shared Memory?
+### What Is Shared Memory?
 
 Shared memory allows multiple processes to map the **same physical memory**
 into their virtual address spaces.
 
 It is the **fastest IPC mechanism** because:
-* No kernel data copying
-* Direct memory access
+- No kernel data copying
+- Direct memory access
 
 ---
 
-=== Shared Memory Workflow
+### Shared Memory Workflow
 
 1. Create shared memory object
 2. Set size
@@ -54,10 +50,9 @@ It is the **fastest IPC mechanism** because:
 
 ---
 
-=== Example: Shared Memory Producer
+### Example: Shared Memory Producer
 
-[source,c]
-----
+```c
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -74,14 +69,13 @@ int main() {
     strcpy(data, "Hello from shared memory");
     return 0;
 }
-----
+```
 
 ---
 
-=== Example: Shared Memory Consumer
+### Example: Shared Memory Consumer
 
-[source,c]
-----
+```c
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -98,25 +92,25 @@ int main() {
     shm_unlink("/myshm");
     return 0;
 }
-----
+```
 
 ---
 
-== POSIX Message Queues
+## POSIX Message Queues
 
-=== What Are Message Queues?
+### What Are Message Queues?
 
 Message queues allow processes to exchange **discrete messages**
 with priorities.
 
 Features:
-* Kernel-managed
-* Ordered delivery
-* Priority support
+- Kernel-managed
+- Ordered delivery
+- Priority support
 
 ---
 
-=== Message Queue Workflow
+### Message Queue Workflow
 
 1. Create/open queue
 2. Send messages
@@ -125,10 +119,9 @@ Features:
 
 ---
 
-=== Example: Message Queue Sender
+### Example: Message Queue Sender
 
-[source,c]
-----
+```c
 #include <mqueue.h>
 #include <string.h>
 
@@ -137,14 +130,13 @@ int main() {
     mq_send(mq, "Hello MQ", 8, 1);
     mq_close(mq);
 }
-----
+```
 
 ---
 
-=== Example: Message Queue Receiver
+### Example: Message Queue Receiver
 
-[source,c]
-----
+```c
 #include <mqueue.h>
 #include <stdio.h>
 
@@ -155,34 +147,33 @@ int main() {
     printf("%s\n", buffer);
     mq_unlink("/myqueue");
 }
-----
+```
 
 ---
 
-== POSIX Semaphores
+## POSIX Semaphores
 
-=== What Are Semaphores?
+### What Are Semaphores?
 
 Semaphores provide **synchronization**, not data transfer.
 
 Used to:
-* Protect shared memory
-* Coordinate processes
-* Control access to resources
+- Protect shared memory
+- Coordinate processes
+- Control access to resources
 
 ---
 
-=== Semaphore Types
+### Semaphore Types
 
-* Named semaphores (inter-process)
-* Unnamed semaphores (in shared memory)
+- Named semaphores (inter-process)
+- Unnamed semaphores (in shared memory)
 
 ---
 
-=== Example: Named Semaphore
+### Example: Named Semaphore
 
-[source,c]
-----
+```c
 #include <semaphore.h>
 #include <fcntl.h>
 
@@ -194,21 +185,21 @@ int main() {
     sem_close(sem);
     sem_unlink("/mysem");
 }
-----
+```
 
 ---
 
-== Synchronization with Shared Memory
+## Synchronization with Shared Memory
 
 Shared memory **must always** be protected using:
-* Semaphores
-* Mutexes (placed inside shared memory)
+- Semaphores
+- Mutexes (placed inside shared memory)
 
 Failing to synchronize leads to race conditions.
 
 ---
 
-== POSIX IPC vs Sockets
+## POSIX IPC vs Sockets
 
 | Feature | POSIX IPC | Sockets |
 |------|----------|--------|
@@ -220,7 +211,7 @@ Failing to synchronize leads to race conditions.
 
 ---
 
-== POSIX IPC vs Boost.Asio
+## POSIX IPC vs Boost.Asio
 
 | Aspect | POSIX IPC | Boost.Asio |
 |-----|---------|-----------|
@@ -234,52 +225,51 @@ They solve different problems.
 
 ---
 
-== When POSIX IPC Is Used
+## When POSIX IPC Is Used
 
 POSIX IPC is typically used when:
 
-* Processes run on the same host
-* Extremely low latency is required
-* Shared state must be accessed
-* Copying data is too expensive
+- Processes run on the same host
+- Extremely low latency is required
+- Shared state must be accessed
+- Copying data is too expensive
 
 Examples:
-* Matching engines
-* Shared risk engines
-* Market data fan-out
+- Matching engines
+- Shared risk engines
+- Market data fan-out
 
 ---
 
-== When POSIX IPC Is Avoided
+## When POSIX IPC Is Avoided
 
 Avoid POSIX IPC when:
 
-* Communication spans machines
-* Fault isolation is required
-* Complexity must be minimized
-* Debugging ease matters
+- Communication spans machines
+- Fault isolation is required
+- Complexity must be minimized
+- Debugging ease matters
 
 ---
 
-== Common Pitfalls
+## Common Pitfalls
 
-* Forgetting to unlink IPC objects
-* Missing synchronization
-* Resource leaks
-* Permission issues
-* Hard-to-debug crashes
+- Forgetting to unlink IPC objects
+- Missing synchronization
+- Resource leaks
+- Permission issues
+- Hard-to-debug crashes
 
 ---
 
-== Interview-Grade Explanation
+## Interview-Grade Explanation
 
-> “Boost.Asio does not use POSIX IPC primitives.  
-> It is built on top of sockets and OS I/O multiplexing mechanisms like epoll.  
+> “Boost.Asio does not use POSIX IPC primitives.
+> It is built on top of sockets and OS I/O multiplexing mechanisms like epoll.
 > POSIX IPC mechanisms such as shared memory, message queues, and semaphores are used for local, high-performance inter-process communication and solve a different class of problems.”
 
 ---
 
-== One-Line Takeaway
+## One-Line Takeaway
 
 POSIX IPC provides ultra-fast local inter-process communication using shared memory and synchronization primitives, while Boost.Asio focuses on scalable, asynchronous socket-based I/O.
-

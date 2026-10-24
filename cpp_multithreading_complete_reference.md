@@ -1,10 +1,6 @@
-= C++ Multithreading Complete Reference (With Examples)
-:toc:
-:toclevels: 4
-:sectnums:
-:source-highlighter: coderay
+# C++ Multithreading Complete Reference (With Examples)
 
-== Introduction
+## Introduction
 
 Multithreading in C++ allows multiple threads of execution within a single process.
 It is used to improve performance, responsiveness, and concurrency, especially on multi-core systems.
@@ -13,23 +9,23 @@ Modern C++ (C++11 and later) provides a standard threading library that abstract
 
 ---
 
-== Basic Concepts
+## Basic Concepts
 
-=== What Is a Thread?
+### What Is a Thread?
 
 A thread is the smallest unit of execution scheduled by the operating system.
 Multiple threads share:
-* Same address space
-* Same heap
-* Same global variables
+- Same address space
+- Same heap
+- Same global variables
 
 Each thread has:
-* Its own stack
-* Its own instruction pointer
+- Its own stack
+- Its own instruction pointer
 
 ---
 
-=== Process vs Thread
+### Process vs Thread
 
 | Process | Thread |
 |------|-------|
@@ -40,12 +36,11 @@ Each thread has:
 
 ---
 
-== std::thread
+## std::thread
 
-=== Creating a Thread
+### Creating a Thread
 
-[source,cpp]
-----
+```cpp
 #include <thread>
 #include <iostream>
 
@@ -57,45 +52,42 @@ int main() {
     std::thread t(task);
     t.join();
 }
-----
+```
 
 A thread starts executing immediately after construction.
 
 ---
 
-=== join() vs detach()
+### join() vs detach()
 
-* `join()` blocks until thread finishes
-* `detach()` runs thread independently
+- `join()` blocks until thread finishes
+- `detach()` runs thread independently
 
-[source,cpp]
-----
+```cpp
 std::thread t(task);
 t.detach(); // no join possible after this
-----
+```
 
 Detached threads must not access destroyed objects.
 
 ---
 
-== Passing Arguments to Threads
+## Passing Arguments to Threads
 
-[source,cpp]
-----
+```cpp
 void print(int x) {
     std::cout << x << std::endl;
 }
 
 std::thread t(print, 10);
 t.join();
-----
+```
 
 ---
 
-=== Passing by Reference
+### Passing by Reference
 
-[source,cpp]
-----
+```cpp
 void increment(int& x) {
     x++;
 }
@@ -103,42 +95,40 @@ void increment(int& x) {
 int value = 0;
 std::thread t(increment, std::ref(value));
 t.join();
-----
+```
 
 `std::ref` is required to avoid copying.
 
 ---
 
-== Race Conditions
+## Race Conditions
 
-=== What Is a Race Condition?
+### What Is a Race Condition?
 
 Occurs when:
-* Multiple threads access shared data
-* At least one write occurs
-* No synchronization is used
+- Multiple threads access shared data
+- At least one write occurs
+- No synchronization is used
 
-[source,cpp]
-----
+```cpp
 int counter = 0;
 
 void inc() {
     counter++; // unsafe
 }
-----
+```
 
 Result is undefined.
 
 ---
 
-== Mutex
+## Mutex
 
-=== std::mutex
+### std::mutex
 
 Mutex ensures mutual exclusion.
 
-[source,cpp]
-----
+```cpp
 #include <mutex>
 
 std::mutex m;
@@ -148,11 +138,11 @@ void inc() {
     std::lock_guard<std::mutex> lock(m);
     counter++;
 }
-----
+```
 
 ---
 
-=== lock_guard vs unique_lock
+### lock_guard vs unique_lock
 
 | lock_guard | unique_lock |
 |----------|------------|
@@ -162,14 +152,13 @@ void inc() {
 
 ---
 
-== Deadlock
+## Deadlock
 
-=== What Is Deadlock?
+### What Is Deadlock?
 
 Threads wait indefinitely due to circular locking.
 
-[source,cpp]
-----
+```cpp
 std::mutex m1, m2;
 
 void f1() {
@@ -181,28 +170,27 @@ void f2() {
     std::lock_guard<std::mutex> l2(m2);
     std::lock_guard<std::mutex> l1(m1);
 }
-----
+```
 
 ---
 
-=== Avoiding Deadlock
+### Avoiding Deadlock
 
-* Lock in consistent order
-* Use `std::lock`
-* Minimize lock scope
+- Lock in consistent order
+- Use `std::lock`
+- Minimize lock scope
 
-[source,cpp]
-----
+```cpp
 std::lock(m1, m2);
 std::lock_guard<std::mutex> l1(m1, std::adopt_lock);
 std::lock_guard<std::mutex> l2(m2, std::adopt_lock);
-----
+```
 
 ---
 
-== Condition Variables
+## Condition Variables
 
-=== Why Condition Variables?
+### Why Condition Variables?
 
 Used when a thread must wait until a condition becomes true.
 
@@ -210,10 +198,9 @@ Avoids busy-waiting.
 
 ---
 
-=== Example: Producer-Consumer
+### Example: Producer-Consumer
 
-[source,cpp]
-----
+```cpp
 #include <condition_variable>
 #include <queue>
 
@@ -232,18 +219,17 @@ void consumer() {
     cv.wait(lock, []{ return !q.empty(); });
     q.pop();
 }
-----
+```
 
 ---
 
-== Atomic Operations
+## Atomic Operations
 
-=== std::atomic
+### std::atomic
 
 Used for lock-free operations.
 
-[source,cpp]
-----
+```cpp
 #include <atomic>
 
 std::atomic<int> counter{0};
@@ -251,11 +237,11 @@ std::atomic<int> counter{0};
 void inc() {
     counter++;
 }
-----
+```
 
 ---
 
-=== atomic vs mutex
+### atomic vs mutex
 
 | atomic | mutex |
 |------|-------|
@@ -265,22 +251,21 @@ void inc() {
 
 ---
 
-== Memory Visibility and Ordering
+## Memory Visibility and Ordering
 
-=== Memory Reordering
+### Memory Reordering
 
 Compilers and CPUs may reorder instructions for optimization.
 Synchronization enforces visibility.
 
-[source,cpp]
-----
+```cpp
 std::atomic<int> x{0};
 x.store(1, std::memory_order_release);
-----
+```
 
 ---
 
-== Thread Safety Levels
+## Thread Safety Levels
 
 | Level | Meaning |
 |----|-------|
@@ -290,47 +275,45 @@ x.store(1, std::memory_order_release);
 
 ---
 
-== Thread Pool (Concept)
+## Thread Pool (Concept)
 
 Creating threads repeatedly is expensive.
 Thread pools reuse threads.
 
-[source,text]
-----
+```text
 Task Queue -> Worker Threads -> Execute Tasks
-----
+```
 
 Thread pools improve scalability.
 
 ---
 
-== Thread Lifetime Issues
+## Thread Lifetime Issues
 
-=== Accessing Destroyed Objects
+### Accessing Destroyed Objects
 
-[source,cpp]
-----
+```cpp
 void run() {
     int x = 10;
     std::thread t([&]{ std::cout << x; });
     t.detach(); // dangerous
 }
-----
+```
 
 This leads to undefined behavior.
 
 ---
 
-== Performance Considerations
+## Performance Considerations
 
-* Avoid locking hot paths
-* Prefer stack allocation
-* Avoid false sharing
-* Minimize context switches
+- Avoid locking hot paths
+- Prefer stack allocation
+- Avoid false sharing
+- Minimize context switches
 
 ---
 
-== Low-Latency Trade-offs
+## Low-Latency Trade-offs
 
 | Choice | Gain | Cost |
 |-----|------|-----|
@@ -341,46 +324,45 @@ This leads to undefined behavior.
 
 ---
 
-== Common Interview Questions
+## Common Interview Questions
 
-=== What happens if a thread is not joined or detached?
+### What happens if a thread is not joined or detached?
 
 Calling destructor on a joinable thread calls `std::terminate`.
 
 ---
 
-=== Is std::mutex recursive?
+### Is std::mutex recursive?
 
 No. Use `std::recursive_mutex` if needed.
 
 ---
 
-=== Can mutex be copied?
+### Can mutex be copied?
 
 No. Mutexes are non-copyable.
 
 ---
 
-== Best Practices
+## Best Practices
 
-* Always use RAII locks
-* Prefer `lock_guard`
-* Avoid detached threads
-* Keep critical sections small
-* Use atomics for counters only
-* Measure before optimizing
+- Always use RAII locks
+- Prefer `lock_guard`
+- Avoid detached threads
+- Keep critical sections small
+- Use atomics for counters only
+- Measure before optimizing
 
 ---
 
-== Interview-Grade Explanation
+## Interview-Grade Explanation
 
-> Multithreading in C++ is built around `std::thread`, synchronization primitives, and strict memory visibility rules.  
-> Correctness comes first, then performance.  
+> Multithreading in C++ is built around `std::thread`, synchronization primitives, and strict memory visibility rules.
+> Correctness comes first, then performance.
 > All threading designs involve trade-offs between safety, latency, and complexity.
 
 ---
 
-== One-Line Takeaway
+## One-Line Takeaway
 
 C++ multithreading provides powerful low-level control, but requires disciplined design, proper synchronization, and deep understanding of object lifetimes and memory visibility.
-

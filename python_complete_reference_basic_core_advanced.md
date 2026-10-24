@@ -1,340 +1,310 @@
-= Python Programming — Complete Reference (Basic, Core, Advanced)
-:toc:
-:toclevels: 4
-:sectnums:
-:source-highlighter: coderay
+# Python Programming — Complete Reference (Basic, Core, Advanced)
 
-== Introduction
+## Introduction
 
 Python is a high-level, interpreted, dynamically typed language known for:
-* Readability
-* Rapid development
-* Rich standard library
-* Strong ecosystem
+- Readability
+- Rapid development
+- Rich standard library
+- Strong ecosystem
 
 Python is widely used in:
-* Automation
-* Backend services
-* Data processing
-* Scripting alongside C/C++
-* DevOps and tooling
+- Automation
+- Backend services
+- Data processing
+- Scripting alongside C/C++
+- DevOps and tooling
 
 ---
 
-== BASIC PYTHON CONCEPTS
+## BASIC PYTHON CONCEPTS
 
-== Variables and Data Types
+## Variables and Data Types
 
 Python variables are dynamically typed.
 
-[source,python]
-----
+```python
 x = 10
 y = 3.14
 name = "Python"
 is_valid = True
-----
+```
 
 Common built-in types:
-* int
-* float
-* str
-* bool
-* None
+- int
+- float
+- str
+- bool
+- None
 
 ---
 
-== Input and Output
+## Input and Output
 
-[source,python]
-----
+```python
 name = input("Enter name: ")
 print("Hello", name)
-----
+```
 
 ---
 
-== Operators
+## Operators
 
-=== Arithmetic Operators
+### Arithmetic Operators
 
-[source,python]
-----
+```python
 a = 10 + 5
 b = 10 / 3
 c = 10 // 3
 d = 10 % 3
-----
+```
 
 ---
 
-=== Comparison Operators
+### Comparison Operators
 
-[source,python]
-----
+```python
 x > y
 x == y
 x != y
-----
+```
 
 ---
 
-=== Logical Operators
+### Logical Operators
 
-[source,python]
-----
+```python
 if x > 0 and y > 0:
     print("Positive")
-----
+```
 
 ---
 
-== Control Flow
+## Control Flow
 
-=== if / elif / else
+### if / elif / else
 
-[source,python]
-----
+```python
 if x > 0:
     print("Positive")
 elif x < 0:
     print("Negative")
 else:
     print("Zero")
-----
+```
 
 ---
 
-=== for Loop
+### for Loop
 
-[source,python]
-----
+```python
 for i in range(5):
     print(i)
-----
+```
 
 ---
 
-=== while Loop
+### while Loop
 
-[source,python]
-----
+```python
 count = 0
 while count < 5:
     count += 1
-----
+```
 
 ---
 
-== Functions
+## Functions
 
-[source,python]
-----
+```python
 def add(a, b):
     return a + b
-----
+```
 
 Key points:
-* Functions are first-class objects
-* Can be passed as arguments
+- Functions are first-class objects
+- Can be passed as arguments
 
 ---
 
-== CORE PYTHON CONCEPTS
+## CORE PYTHON CONCEPTS
 
-== Data Structures
+## Data Structures
 
-=== List
+### List
 
-[source,python]
-----
+```python
 nums = [1, 2, 3]
 nums.append(4)
-----
+```
 
 ---
 
-=== Tuple
+### Tuple
 
-[source,python]
-----
+```python
 point = (10, 20)
-----
+```
 
 Immutable sequence.
 
 ---
 
-=== Dictionary
+### Dictionary
 
-[source,python]
-----
+```python
 user = {"name": "Alice", "age": 30}
 print(user["name"])
-----
+```
 
 ---
 
-=== Set
+### Set
 
-[source,python]
-----
+```python
 s = {1, 2, 3}
 s.add(4)
-----
+```
 
 ---
 
-== String Handling
+## String Handling
 
-[source,python]
-----
+```python
 text = "hello python"
 print(text.upper())
 print(text.split())
-----
+```
 
 ---
 
-== List Comprehensions
+## List Comprehensions
 
-[source,python]
-----
+```python
 squares = [x*x for x in range(5)]
-----
+```
 
 Concise and efficient.
 
 ---
 
-== Exception Handling
+## Exception Handling
 
-[source,python]
-----
+```python
 try:
     x = int("abc")
 except ValueError:
     print("Conversion failed")
 finally:
     print("Done")
-----
+```
 
 ---
 
-== File Handling
+## File Handling
 
-[source,python]
-----
+```python
 with open("data.txt", "w") as f:
     f.write("Hello")
-----
+```
 
 `with` ensures automatic cleanup.
 
 ---
 
-== Modules and Packages
+## Modules and Packages
 
-[source,python]
-----
+```python
 import math
 print(math.sqrt(16))
-----
+```
 
 Custom module:
-[source,python]
-----
+```python
 import mymodule
-----
+```
 
 ---
 
-== Object-Oriented Programming (OOP)
+## Object-Oriented Programming (OOP)
 
-== Classes and Objects
+## Classes and Objects
 
-[source,python]
-----
+```python
 class Car:
     def __init__(self, brand):
         self.brand = brand
 
     def drive(self):
         print("Driving", self.brand)
-----
+```
 
 ---
 
-== Inheritance
+## Inheritance
 
-[source,python]
-----
+```python
 class ElectricCar(Car):
     pass
-----
+```
 
 ---
 
-== Encapsulation
+## Encapsulation
 
-[source,python]
-----
+```python
 class Account:
     def __init__(self):
         self.__balance = 0
-----
+```
 
 Double underscore makes attribute private (name mangling).
 
 ---
 
-== Polymorphism
+## Polymorphism
 
-[source,python]
-----
+```python
 def start(car):
     car.drive()
-----
+```
 
 Duck typing:
 > “If it quacks like a duck, it’s a duck.”
 
 ---
 
-== ADVANCED PYTHON CONCEPTS
+## ADVANCED PYTHON CONCEPTS
 
-== Iterators and Generators
+## Iterators and Generators
 
-=== Iterator
+### Iterator
 
-[source,python]
-----
+```python
 nums = [1,2,3]
 it = iter(nums)
 print(next(it))
-----
+```
 
 ---
 
-=== Generator
+### Generator
 
-[source,python]
-----
+```python
 def count_up(n):
     for i in range(n):
         yield i
-----
+```
 
 Generators are memory efficient.
 
 ---
 
-== Decorators
+## Decorators
 
 Decorators modify functions.
 
-[source,python]
-----
+```python
 def my_decorator(func):
     def wrapper():
         print("Before")
@@ -345,81 +315,75 @@ def my_decorator(func):
 @my_decorator
 def say_hello():
     print("Hello")
-----
+```
 
 ---
 
-== Lambda Functions
+## Lambda Functions
 
-[source,python]
-----
+```python
 add = lambda a, b: a + b
-----
+```
 
 Used for short, inline functions.
 
 ---
 
-== *args and **kwargs
+## *args and **kwargs
 
-[source,python]
-----
+```python
 def func(*args, **kwargs):
     print(args)
     print(kwargs)
-----
+```
 
 Used for flexible APIs.
 
 ---
 
-== Context Managers
+## Context Managers
 
-[source,python]
-----
+```python
 class MyContext:
     def __enter__(self):
         print("Enter")
     def __exit__(self, exc_type, exc, tb):
         print("Exit")
-----
+```
 
 Used with `with` statement.
 
 ---
 
-== Memory Management
+## Memory Management
 
 Python uses:
-* Reference counting
-* Garbage collection
+- Reference counting
+- Garbage collection
 
-[source,python]
-----
+```python
 import gc
 gc.collect()
-----
+```
 
 ---
 
-== Shallow vs Deep Copy
+## Shallow vs Deep Copy
 
-[source,python]
-----
+```python
 import copy
 a = [1, [2,3]]
 b = copy.copy(a)
 c = copy.deepcopy(a)
-----
+```
 
 ---
 
-== Multithreading vs Multiprocessing
+## Multithreading vs Multiprocessing
 
-=== Threading (GIL)
+### Threading (GIL)
 
-[source,python]
-----
+```python
 import threading
 
 def task():
@@ -427,16 +391,15 @@ def task():
 
 t = threading.Thread(target=task)
 t.start()
-----
+```
 
 Threads share memory but are limited by GIL.
 
 ---
 
-=== Multiprocessing
+### Multiprocessing
 
-[source,python]
-----
+```python
 from multiprocessing import Process
 
 def task():
@@ -444,16 +407,15 @@ def task():
 
 p = Process(target=task)
 p.start()
-----
+```
 
 Uses multiple CPU cores.
 
 ---
 
-== Async Programming (async / await)
+## Async Programming (async / await)
 
-[source,python]
-----
+```python
 import asyncio
 
 async def main():
@@ -461,25 +423,24 @@ async def main():
     print("Done")
 
 asyncio.run(main())
-----
+```
 
 Used for I/O-bound concurrency.
 
 ---
 
-== Virtual Environments
+## Virtual Environments
 
-[source,bash]
-----
+```bash
 python -m venv venv
 source venv/bin/activate
-----
+```
 
 Isolates dependencies.
 
 ---
 
-== Python vs C++ (Quick Comparison)
+## Python vs C++ (Quick Comparison)
 
 | Python | C++ |
 |-----|-----|
@@ -492,27 +453,26 @@ Python complements C++ well.
 
 ---
 
-== Common Interview Questions
+## Common Interview Questions
 
-* Difference between list and tuple?
-* What is GIL?
-* What are decorators?
-* Generator vs list?
-* Shallow vs deep copy?
-
----
-
-== Best Practices
-
-* Use virtual environments
-* Write readable code
-* Use standard libraries
-* Handle exceptions properly
-* Avoid premature optimization
+- Difference between list and tuple?
+- What is GIL?
+- What are decorators?
+- Generator vs list?
+- Shallow vs deep copy?
 
 ---
 
-== One-Line Takeaway
+## Best Practices
+
+- Use virtual environments
+- Write readable code
+- Use standard libraries
+- Handle exceptions properly
+- Avoid premature optimization
+
+---
+
+## One-Line Takeaway
 
 Python is a powerful, expressive language that prioritizes readability and productivity, while still offering advanced features for scalable and concurrent applications.
-
